@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist",         // Redirect output structure to dist dir
+    "rootDir": "./src",         // Specify root directory of input files
+    "esModuleInterop": true,    // Allows import of CommonJS modules
+    "moduleResolution": "node", // TypeScript's module resolution strategy
+    "target": "es6",            // Specify ECMAScript target version
+    "module": "commonjs",       // Specify module code generation
+    "strict": true              // Enable strict type-checking options
+  }
+}
