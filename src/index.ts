@@ -1,5 +1,5 @@
-import express from 'express';
-import http from 'http';
+const express = require('express');
+const http = require('http');
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
@@ -18,9 +18,6 @@ app.get('/', (req, res) => {
 
 const avatar = new Avatar();
 
-function broadcast() {
-    io.emit('update', {'enemies': enemiesStateManager.serialize(), 'avatar': avatar.serialize()});
-}
 io.on('connection', (socket) => {
     console.log('a user connected');
     socket.on('disconnect', () => {
@@ -72,6 +69,10 @@ io.on('connection', (socket) => {
     // })
 
 });
+
+function broadcast() {
+    io.emit('update', {'enemies': enemiesStateManager.serialize(), 'avatar': avatar.serialize()});
+}
 
 server.listen(3000, () => {
     console.log('listening on *:3000');
