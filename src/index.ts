@@ -10,7 +10,12 @@ export const AVATAR_ATTACK_ENEMY_RANGE = 7;
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = new Server(server, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
+});
 
 app.get('/', (req, res) => {
     res.send('<h1>health check OK</h1>');

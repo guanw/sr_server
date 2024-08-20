@@ -14,8 +14,8 @@ class Enemy extends Entity {
   private y: number;
   constructor() {
     super();
-    this.x = 400;//Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
-    this.y = 300;//Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
+    this.x = Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
+    this.y = Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
   }
 
   getX(): number {
