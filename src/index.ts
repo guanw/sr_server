@@ -52,20 +52,20 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
-    // socket.on('handleAvatarAttackEnemiesEvent', () => {
-    //     const enemiesMap = enemiesStateManager.getEnemies();
-    //     const user = avatar;
-    //     for (const key in enemiesMap) {
-    //         const enemy = enemiesMap[key];
-    //         if (enemy === undefined) {
-    //             return;
-    //         }
-    //         if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
-    //             enemiesStateManager.killEnemy(key);
-    //             broadcast();
-    //         }
-    //     };
-    // })
+    socket.on('handleAvatarAttackEnemiesEvent', () => {
+        const enemiesMap = enemiesStateManager.getEnemies();
+        const user = avatar;
+        for (const key in enemiesMap) {
+            const enemy = enemiesMap[key];
+            if (enemy === undefined) {
+                return;
+            }
+            if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
+                enemiesStateManager.killEnemy(key);
+            }
+        };
+        broadcast();
+    })
 
 });
 
