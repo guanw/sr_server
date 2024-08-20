@@ -47,7 +47,6 @@ io.on('connection', (socket) => {
             }
             if (enemy.isCollidedWith(avatar, ENEMY_ATTACK_AVATAR_RANGE)) {
                 avatar.collide();
-                io.emit('update', {'enemies': enemiesStateManager.serialize(), 'avatar': avatar.serialize()})
             }
         }
         broadcast();
