@@ -5,8 +5,8 @@ import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
 
 
-export const ENEMY_ATTACK_AVATAR_RANGE = 5;
-export const AVATAR_ATTACK_ENEMY_RANGE = 7;
+export const ENEMY_ATTACK_AVATAR_RANGE = 15;
+export const AVATAR_ATTACK_ENEMY_RANGE = 17;
 
 const app = express();
 const server = http.createServer(app);
@@ -17,11 +17,14 @@ const io = new Server(server, {
     }
 });
 
+const avatar = new Avatar();
 app.get('/', (req, res) => {
-    res.send('<h1>health check OK</h1>');
+    const enemies = JSON.stringify(enemiesStateManager.serialize());
+    const serializedAvatar = JSON.stringify(avatar.serialize());
+    res.send(`<h1>health check OK</h1><p>${enemies}</p><p>${serializedAvatar}</p>`);
 });
 
-const avatar = new Avatar();
+
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -39,6 +42,7 @@ io.on('connection', (socket) => {
         for (const key in enemiesMap) {
             const enemy = enemiesMap[key];
             enemy.moveTowardsAvatar(avatar.getX(), avatar.getY());
+            enemiesMap[key] = enemy;
         }
         broadcast();
     });
