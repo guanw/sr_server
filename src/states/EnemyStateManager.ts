@@ -22,20 +22,20 @@ class EnemiesStateManager {
 
     public serialize(): EnemiesSerialization {
       const serialization: EnemiesSerialization = {};
-      for (const key in this.enemiesMap) {
-          const enemy = this.enemiesMap[key];
+      Object.keys(this.enemiesMap).forEach((key) => {
+        const enemy = this.enemiesMap[key];
           serialization[key] = {
             x: enemy.getX(),
             y: enemy.getY(),
         };
-      }
+      })
       return serialization;
     }
 
     public killEnemy(enemyKey: string) {
-        if (enemyKey in this.enemiesMap) {
-          delete(this.enemiesMap[enemyKey]);
-        }
+      Object.keys(this.enemiesMap).forEach((key) => {
+        delete(this.enemiesMap[enemyKey]);
+      });
     }
 }
 

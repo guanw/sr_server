@@ -39,17 +39,17 @@ io.on('connection', (socket) => {
 
     socket.on('handleEnemiesMoveTowardsAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
-        for (const key in enemiesMap) {
+        Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
             enemy.moveTowardsAvatar(avatar.getX(), avatar.getY());
             enemiesMap[key] = enemy;
-        }
+        });
         broadcast();
     });
 
     socket.on('handleEnemiesAttackAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
-        for (const key in enemiesMap) {
+        Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
             if (enemy === undefined) {
                 return;
@@ -57,14 +57,14 @@ io.on('connection', (socket) => {
             if (enemy.isCollidedWith(avatar, ENEMY_ATTACK_AVATAR_RANGE)) {
                 avatar.collide();
             }
-        }
+        });
         broadcast();
     })
 
     socket.on('handleAvatarAttackEnemiesEvent', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
         const user = avatar;
-        for (const key in enemiesMap) {
+        Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
             if (enemy === undefined) {
                 return;
@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
             if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
                 enemiesStateManager.killEnemy(key);
             }
-        };
+        });
         broadcast();
     })
 
