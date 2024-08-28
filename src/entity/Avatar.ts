@@ -14,7 +14,7 @@ class Avatar extends Entity {
   constructor() {
     super();
     this.x = 400;
-    this.y = 300;
+    this.y = 400;
     this.hp = 100;
   }
 
@@ -25,15 +25,10 @@ class Avatar extends Entity {
     return this.y;
   }
   setDeltaX(deltaX: number): void {
-    this.x -= deltaX;
+    this.x += deltaX;
   }
   setDeltaY(deltaY: number): void {
-    this.y -= deltaY;
-  }
-
-  public setPos(x: number, y: number) {
-    this.x = x;
-    this.y = y;
+    this.y += deltaY;
   }
 
   collide() {

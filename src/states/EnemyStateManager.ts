@@ -13,7 +13,7 @@ class EnemiesStateManager {
 
     public addEnemy() {
       const uuid = uuidv4();
-      this.enemiesMap[uuid] = new Enemy();
+      this.enemiesMap[uuid] = new Enemy(uuid);
     }
 
     public getEnemies(): EnemiesMap {

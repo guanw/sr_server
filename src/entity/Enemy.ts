@@ -1,8 +1,5 @@
+import { GAME_WIDTH, GAME_HEIGHT, DISPLACEMENT, ENEMY_SPEED } from "../Constants";
 import { Entity } from "./Entity";
-const GAME_HEIGHT = 600;
-const GAME_WIDTH = 800;
-const DISPLACEMENT = 5;
-const ENEMY_SPEED = 1;
 
 export interface EnemyObject {
   x: number;
@@ -10,12 +7,16 @@ export interface EnemyObject {
 };
 
 class Enemy extends Entity {
+  private key: string;
   private x: number;
   private y: number;
-  constructor() {
+  constructor(key: string) {
     super();
-    this.x = Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
-    this.y = Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
+    // this.x = Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
+    // this.y = Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
+    this.key = key;
+    this.x = 200;
+    this.y = 200;
   }
 
   getX(): number {
@@ -46,12 +47,13 @@ class Enemy extends Entity {
   public moveTowardsAvatar(avatarX: number, avatarY: number) {
     const enemyX = this.getX();
     const enemyY = this.getY();
-    const dx = avatarX - DISPLACEMENT - enemyX;
-    const dy = avatarY - DISPLACEMENT - enemyY;
+    const dx = avatarX - enemyX;
+    const dy = avatarY - enemyY;
     const angle = Math.atan2(dy, dx);
     const vx = Math.cos(angle) * ENEMY_SPEED;
     const vy = Math.sin(angle) * ENEMY_SPEED;
     this.setPos(enemyX + vx, enemyY + vy);
+    console.log(`current enemy ${this.key} loc: ${enemyX + vx}, ${enemyY + vy}`);
   }
 }
 
