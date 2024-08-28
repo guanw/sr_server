@@ -7,6 +7,7 @@ import { Avatar } from './entity/Avatar';
 
 export const ENEMY_ATTACK_AVATAR_RANGE = 15;
 export const AVATAR_ATTACK_ENEMY_RANGE = 17;
+const AVATAR_SPEED = 3;
 
 const app = express();
 const server = http.createServer(app);
@@ -16,6 +17,12 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
+const avatarKeys: { [key: string]: boolean } = {
+    ArrowLeft: false,
+    ArrowRight: false,
+    ArrowUp: false,
+    ArrowDown: false,
+};
 
 const avatar = new Avatar();
 app.get('/', (req, res) => {
@@ -42,7 +49,6 @@ io.on('connection', (socket) => {
         Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
             enemy.moveTowardsAvatar(avatar.getX(), avatar.getY());
-            enemiesMap[key] = enemy;
         });
         broadcast();
     });
@@ -76,7 +82,64 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
+
+    socket.on('handleUserKeyDown', (data) => {
+        // Handle avatar movement based on the key pressed
+        const key = data.key as string;
+        handleKeyDown(key);
+    });
+
+    socket.on('handleUserKeyUp', (data) => {
+        // Handle stopping avatar movement
+        const key = data.key as string;
+        handleKeyUp(key);
+    });
+    socket.on('handleMoveAvatar', async (data) => {
+        if (avatarKeys.ArrowLeft) {
+            await genMoveUserLeft();
+          }
+          if (avatarKeys.ArrowRight) {
+            await genMoveUserRight();
+          }
+          if (avatarKeys.ArrowUp) {
+            await genMoveUserUp();
+          }
+          if (avatarKeys.ArrowDown) {
+            await genMoveUserDown();
+          }
+    })
+
 });
+
+function handleKeyDown(key: string) {
+    if (key in avatarKeys) {
+        avatarKeys[key] = true;
+    }
+    // TODO Handle other keys for menu, debug tool, etc.
+}
+
+function handleKeyUp(key: string) {
+    if (key in avatarKeys) {
+        avatarKeys[key] = false;
+    }
+    // TODO Handle other key up events
+}
+
+async function genMoveUserLeft() {
+    avatar.setDeltaX(-AVATAR_SPEED);
+}
+
+async function genMoveUserRight() {
+    avatar.setDeltaX(AVATAR_SPEED);
+}
+
+async function genMoveUserUp() {
+    avatar.setDeltaY(-AVATAR_SPEED);
+}
+
+async function genMoveUserDown() {
+    avatar.setDeltaY(AVATAR_SPEED);
+}
 
 function broadcast() {
     io.emit('update', {'enemies': enemiesStateManager.serialize(), 'avatar': avatar.serialize()});

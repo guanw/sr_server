@@ -1,7 +1,7 @@
+import { GAME_WIDTH, GAME_HEIGHT } from "../Constants";
 import { Entity } from "./Entity";
-const GAME_HEIGHT = 600;
-const GAME_WIDTH = 800;
-const DISPLACEMENT = 5;
+
+const DISPLACEMENT = 10;
 const ENEMY_SPEED = 1;
 
 export interface EnemyObject {

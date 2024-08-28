@@ -1,3 +1,4 @@
+import { GAME_WIDTH, GAME_HEIGHT } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface AvatarObject {
@@ -13,8 +14,8 @@ class Avatar extends Entity {
   private hp: number;
   constructor() {
     super();
-    this.x = 400;
-    this.y = 300;
+    this.x = GAME_WIDTH / 2;
+    this.y = GAME_HEIGHT / 2;
     this.hp = 100;
   }
 
@@ -25,10 +26,10 @@ class Avatar extends Entity {
     return this.y;
   }
   setDeltaX(deltaX: number): void {
-    this.x -= deltaX;
+    this.x += deltaX;
   }
   setDeltaY(deltaY: number): void {
-    this.y -= deltaY;
+    this.y += deltaY;
   }
 
   public setPos(x: number, y: number) {
