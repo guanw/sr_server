@@ -28,7 +28,11 @@ const avatar = new Avatar();
 app.get('/', (req, res) => {
     const enemies = JSON.stringify(enemiesStateManager.serialize());
     const serializedAvatar = JSON.stringify(avatar.serialize());
-    res.send(`<h1>health check OK</h1><p>${enemies}</p><p>${serializedAvatar}</p>`);
+    res.send(`
+        <h1>debugging info</h1>
+        <p>${enemies}</p>
+        <p>${serializedAvatar}</p>
+    `);
 });
 
 
@@ -82,33 +86,30 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
-
     socket.on('handleUserKeyDown', (data) => {
-        // Handle avatar movement based on the key pressed
         const key = data.key as string;
         handleKeyDown(key);
     });
 
     socket.on('handleUserKeyUp', (data) => {
-        // Handle stopping avatar movement
         const key = data.key as string;
         handleKeyUp(key);
     });
+
     socket.on('handleMoveAvatar', async (data) => {
         if (avatarKeys.ArrowLeft) {
-            await genMoveUserLeft();
+            avatar.moveLeft();
           }
           if (avatarKeys.ArrowRight) {
-            await genMoveUserRight();
+            avatar.moveRight();
           }
           if (avatarKeys.ArrowUp) {
-            await genMoveUserUp();
+            avatar.moveUp();
           }
           if (avatarKeys.ArrowDown) {
-            await genMoveUserDown();
+            avatar.moveDown();
           }
     })
-
 });
 
 function handleKeyDown(key: string) {
@@ -123,22 +124,6 @@ function handleKeyUp(key: string) {
         avatarKeys[key] = false;
     }
     // TODO Handle other key up events
-}
-
-async function genMoveUserLeft() {
-    avatar.setDeltaX(-AVATAR_SPEED);
-}
-
-async function genMoveUserRight() {
-    avatar.setDeltaX(AVATAR_SPEED);
-}
-
-async function genMoveUserUp() {
-    avatar.setDeltaY(-AVATAR_SPEED);
-}
-
-async function genMoveUserDown() {
-    avatar.setDeltaY(AVATAR_SPEED);
 }
 
 function broadcast() {

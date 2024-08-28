@@ -1,8 +1,5 @@
-import { GAME_WIDTH, GAME_HEIGHT } from "../Constants";
+import { GAME_WIDTH, GAME_HEIGHT, AVATAR_DISPLACEMENT, ENEMY_SPEED } from "../Constants";
 import { Entity } from "./Entity";
-
-const DISPLACEMENT = 10;
-const ENEMY_SPEED = 1;
 
 export interface EnemyObject {
   x: number;
@@ -46,8 +43,8 @@ class Enemy extends Entity {
   public moveTowardsAvatar(avatarX: number, avatarY: number) {
     const enemyX = this.getX();
     const enemyY = this.getY();
-    const dx = avatarX - DISPLACEMENT - enemyX;
-    const dy = avatarY - DISPLACEMENT - enemyY;
+    const dx = avatarX - AVATAR_DISPLACEMENT - enemyX;
+    const dy = avatarY - AVATAR_DISPLACEMENT - enemyY;
     const angle = Math.atan2(dy, dx);
     const vx = Math.cos(angle) * ENEMY_SPEED;
     const vy = Math.sin(angle) * ENEMY_SPEED;

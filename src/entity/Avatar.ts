@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT } from "../Constants";
+import { GAME_WIDTH, GAME_HEIGHT, ENEMY_ATTACK_VALUE } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface AvatarObject {
@@ -7,7 +7,6 @@ export interface AvatarObject {
   hp: number;
 };
 
-export const ENEMY_ATTACK_VALUE = 10;
 class Avatar extends Entity {
   private x: number;
   private y: number;
