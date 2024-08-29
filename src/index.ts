@@ -3,6 +3,7 @@ const http = require('http');
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
+import { itemsStateManager } from './states/ItemStateManager';
 
 
 export const ENEMY_ATTACK_AVATAR_RANGE = 15;
@@ -47,6 +48,24 @@ io.on('connection', (socket) => {
         enemiesStateManager.addEnemy();
         broadcast();
     });
+
+    socket.on('handleGenerateNewItem', () => {
+        itemsStateManager.addItem();
+        broadcast();
+    })
+
+    socket.on('handleCollectItem', () => {
+        const items = itemsStateManager.getItems();
+        Object.keys(items).forEach((key) => {
+            const item = items[key];
+            if (avatar.isCollidedWith(item)) {
+                if (item.getType() === 'bomb') {
+                    enemiesStateManager.destroyAllEnemies();
+                }
+            }
+        });
+        broadcast();
+    })
 
     socket.on('handleEnemiesMoveTowardsAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
@@ -127,7 +146,11 @@ function handleKeyUp(key: string) {
 }
 
 function broadcast() {
-    io.emit('update', {'enemies': enemiesStateManager.serialize(), 'avatar': avatar.serialize()});
+    io.emit('update', {
+        'enemies': enemiesStateManager.serialize(),
+        'avatar': avatar.serialize(),
+        'items': itemsStateManager.serialize()
+    });
 }
 
 server.listen(3000, () => {
