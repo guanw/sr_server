@@ -44,6 +44,11 @@ class ItemsStateManager {
     })
     return serialization;
   }
+
+  public consumeItem(itemKey: string) {
+    delete(this.items[itemKey]);
+  }
+
 }
 
 export const itemsStateManager = new ItemsStateManager();

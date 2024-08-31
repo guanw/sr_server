@@ -4,11 +4,8 @@ import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
 import { itemsStateManager } from './states/ItemStateManager';
+import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE } from './Constants';
 
-
-export const ENEMY_ATTACK_AVATAR_RANGE = 15;
-export const AVATAR_ATTACK_ENEMY_RANGE = 17;
-const AVATAR_SPEED = 3;
 
 const app = express();
 const server = http.createServer(app);
@@ -29,10 +26,12 @@ const avatar = new Avatar();
 app.get('/', (req, res) => {
     const enemies = JSON.stringify(enemiesStateManager.serialize());
     const serializedAvatar = JSON.stringify(avatar.serialize());
+    const items = JSON.stringify(itemsStateManager.serialize());
     res.send(`
         <h1>debugging info</h1>
-        <p>${enemies}</p>
-        <p>${serializedAvatar}</p>
+        <p>enemies: ${enemies}</p>
+        <p>avatar: ${serializedAvatar}</p>
+        <p>items: ${items}</p>
     `);
 });
 
@@ -62,7 +61,9 @@ io.on('connection', (socket) => {
                 if (item.getType() === 'bomb') {
                     enemiesStateManager.destroyAllEnemies();
                 }
+                itemsStateManager.consumeItem(key);
             }
+
         });
         broadcast();
     })
