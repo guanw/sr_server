@@ -1,5 +1,5 @@
-const express = require('express');
-const http = require('http');
+import express from 'express';
+import * as http from 'http';
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
@@ -116,7 +116,7 @@ io.on('connection', (socket) => {
         handleKeyUp(key);
     });
 
-    socket.on('handleMoveAvatar', async (data) => {
+    socket.on('handleMoveAvatar', async () => {
         if (avatarKeys.ArrowLeft) {
             avatar.moveLeft();
           }
