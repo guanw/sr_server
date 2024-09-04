@@ -38,7 +38,7 @@ class EnemiesStateManager {
 
     public destroyAllEnemies() {
       Object.keys(this.enemiesMap).forEach((key) => {
-        delete(this.enemiesMap[key]);
+        this.killEnemy(key);
       });
     }
 }
