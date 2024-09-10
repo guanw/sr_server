@@ -5,6 +5,7 @@ import enemiesStateManager from './states/EnemyStateManager';
 import { Avatar } from './entity/Avatar';
 import { itemsStateManager } from './states/ItemStateManager';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE } from './Constants';
+import avatarStateManager from './states/AvatarStateManager';
 
 
 const app = express();
@@ -39,8 +40,11 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('a user connected');
+    avatarStateManager.addAvatar(socket.id);
+
     socket.on('disconnect', () => {
         console.log('user disconnected');
+        avatarStateManager.removeAvatar(socket.id);
     });
 
     socket.on('handleGenerateNewEnemy', () => {
@@ -149,7 +153,7 @@ function handleKeyUp(key: string) {
 function broadcast() {
     io.emit('update', {
         'enemies': enemiesStateManager.serialize(),
-        'avatar': avatar.serialize(),
+        'avatars': avatarStateManager.serialize(),
         'items': itemsStateManager.serialize()
     });
 }

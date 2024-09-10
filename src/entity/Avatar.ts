@@ -13,8 +13,8 @@ class Avatar extends Entity {
   private hp: number;
   constructor() {
     super();
-    this.x = GAME_WIDTH / 2;
-    this.y = GAME_HEIGHT / 2;
+    this.x = Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
+    this.y = Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
     this.hp = 100;
   }
 
@@ -23,6 +23,9 @@ class Avatar extends Entity {
   }
   getY(): number {
     return this.y;
+  }
+  getHp(): number {
+    return this.hp;
   }
   setDeltaX(deltaX: number): void {
     this.x += deltaX;
