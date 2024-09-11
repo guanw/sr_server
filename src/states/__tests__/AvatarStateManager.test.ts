@@ -5,6 +5,22 @@ describe('add', () => {
     avatarStateManager.addAvatar("test");
     const avatarKeys = Object.keys(avatarStateManager.getAvatars());
     expect(avatarKeys.length).toBe(1);
+
+  });
+
+  it('addAvatar should create default action map', () => {
+    avatarStateManager.addAvatar("test");
+    const actionMap = avatarStateManager.getAvatarActionMap();
+    const avatarActionMapKeys = Object.keys(actionMap);
+    expect(avatarActionMapKeys.length).toBe(1);
+
+    const key = avatarActionMapKeys[0];
+    expect(actionMap[key]).toMatchObject({
+      ArrowLeft: false,
+      ArrowRight: false,
+      ArrowUp: false,
+      ArrowDown: false,
+    });
   });
 
   it('serialize should return x,y,hp of avatar', () => {

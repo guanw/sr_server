@@ -2,7 +2,6 @@ import express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
-import { Avatar } from './entity/Avatar';
 import { itemsStateManager } from './states/ItemStateManager';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE } from './Constants';
 import avatarStateManager from './states/AvatarStateManager';
@@ -16,22 +15,15 @@ const io = new Server(server, {
         methods: ["GET", "POST"]
     }
 });
-const avatarKeys: { [key: string]: boolean } = {
-    ArrowLeft: false,
-    ArrowRight: false,
-    ArrowUp: false,
-    ArrowDown: false,
-};
 
-const avatar = new Avatar();
-app.get('/', (req, res) => {
+app.get('/', (_req, res) => {
     const enemies = JSON.stringify(enemiesStateManager.serialize());
-    const serializedAvatar = JSON.stringify(avatar.serialize());
+    const avatars = JSON.stringify(avatarStateManager.serialize());
     const items = JSON.stringify(itemsStateManager.serialize());
     res.send(`
         <h1>debugging info</h1>
         <p>enemies: ${enemies}</p>
-        <p>avatar: ${serializedAvatar}</p>
+        <p>avatar: ${avatars}</p>
         <p>items: ${items}</p>
     `);
 });
@@ -59,68 +51,84 @@ io.on('connection', (socket) => {
 
     socket.on('handleCollectItem', () => {
         const items = itemsStateManager.getItems();
-        Object.keys(items).forEach((key) => {
-            const item = items[key];
-            if (avatar.isCollidedWith(item)) {
-                if (item.getType() === 'bomb') {
-                    enemiesStateManager.destroyAllEnemies();
+        const avatars = avatarStateManager.getAvatars();
+        Object.keys(avatars).forEach((avatarKey) => {
+            const avatar = avatars[avatarKey];
+            Object.keys(items).forEach((key) => {
+                const item = items[key];
+                if (avatar.isCollidedWith(item)) {
+                    if (item.getType() === 'bomb') {
+                        enemiesStateManager.destroyAllEnemies();
+                    }
+                    itemsStateManager.consumeItem(key);
                 }
-                itemsStateManager.consumeItem(key);
-            }
+            });
+        })
 
-        });
         broadcast();
     })
 
     socket.on('handleEnemiesMoveTowardsAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
+        const firstAvatar = avatarStateManager.getFirstAvatar();
         Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
-            enemy.moveTowardsAvatar(avatar.getX(), avatar.getY());
+            enemy.moveTowardsAvatar(firstAvatar.getX(), firstAvatar.getY());
         });
         broadcast();
     });
 
     socket.on('handleEnemiesAttackAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
-        Object.keys(enemiesMap).forEach((key) => {
-            const enemy = enemiesMap[key];
-            if (enemy === undefined) {
-                return;
-            }
-            if (enemy.isCollidedWith(avatar, ENEMY_ATTACK_AVATAR_RANGE)) {
-                avatar.collide();
-            }
+        const avatarsMap = avatarStateManager.getAvatars();
+        Object.keys(avatarsMap).forEach((avatarKey) => {
+            const avatar = avatarsMap[avatarKey];
+            Object.keys(enemiesMap).forEach((key) => {
+                const enemy = enemiesMap[key];
+                if (enemy === undefined) {
+                    return;
+                }
+                if (enemy.isCollidedWith(avatar, ENEMY_ATTACK_AVATAR_RANGE)) {
+                    avatar.collide();
+                }
+            });
         });
         broadcast();
     })
 
     socket.on('handleAvatarAttackEnemiesEvent', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
-        const user = avatar;
-        Object.keys(enemiesMap).forEach((key) => {
-            const enemy = enemiesMap[key];
-            if (enemy === undefined) {
-                return;
-            }
-            if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
-                enemiesStateManager.killEnemy(key);
-            }
+        const avatarsMap = avatarStateManager.getAvatars();
+        Object.keys(avatarsMap).forEach((avatarKey) => {
+            const user = avatarsMap[avatarKey];
+            Object.keys(enemiesMap).forEach((key) => {
+                const enemy = enemiesMap[key];
+                if (enemy === undefined) {
+                    return;
+                }
+                if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
+                    enemiesStateManager.killEnemy(key);
+                }
+            });
         });
         broadcast();
     })
 
     socket.on('handleUserKeyDown', (data) => {
         const key = data.key as string;
-        handleKeyDown(key);
+        const id = data.id as string;
+        handleKeyDown(id, key);
     });
 
     socket.on('handleUserKeyUp', (data) => {
         const key = data.key as string;
-        handleKeyUp(key);
+        const id = data.id as string;
+        handleKeyUp(id, key);
     });
 
-    socket.on('handleMoveAvatar', async () => {
+    socket.on('handleMoveAvatar', async (id: string) => {
+        const avatar = avatarStateManager.getAvatars()[id];
+        const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
         if (avatarKeys.ArrowLeft) {
             avatar.moveLeft();
           }
@@ -136,14 +144,16 @@ io.on('connection', (socket) => {
     })
 });
 
-function handleKeyDown(key: string) {
+function handleKeyDown(id: string, key: string) {
+    const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
     if (key in avatarKeys) {
         avatarKeys[key] = true;
     }
     // TODO Handle other keys for menu, debug tool, etc.
 }
 
-function handleKeyUp(key: string) {
+function handleKeyUp(id: string, key: string) {
+    const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
     if (key in avatarKeys) {
         avatarKeys[key] = false;
     }
