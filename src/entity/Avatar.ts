@@ -24,9 +24,6 @@ class Avatar extends Entity {
   getY(): number {
     return this.y;
   }
-  getHp(): number {
-    return this.hp;
-  }
   setDeltaX(deltaX: number): void {
     this.x += deltaX;
   }

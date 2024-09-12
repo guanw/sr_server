@@ -33,8 +33,16 @@ class AvatarStateManager {
       return this.avatarsMap;
     }
 
+    public getAvatarById(id: string): Avatar {
+      return this.avatarsMap[id];
+    }
+
     public getAvatarActionMap(): AvatarsActionMap {
       return this.avatarsActionMap;
+    }
+
+    public getAvatarActionById(id: string): AvatarAction {
+      return this.avatarsActionMap[id];
     }
 
     public getFirstAvatar(): Avatar {
@@ -50,17 +58,14 @@ class AvatarStateManager {
       const serialization: AvatarsSerialization = {};
       Object.keys(this.avatarsMap).forEach((key) => {
         const avatar = this.avatarsMap[key];
-          serialization[key] = {
-            x: avatar.getX(),
-            y: avatar.getY(),
-            hp: avatar.getHp(),
-        };
+        serialization[key] = avatar.serialize();
       })
       return serialization;
     }
 
     public removeAvatar(avatarKey: string) {
       delete(this.avatarsMap[avatarKey]);
+      delete(this.avatarsActionMap[avatarKey]);
     }
 }
 

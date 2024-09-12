@@ -28,7 +28,16 @@ app.get('/', (_req, res) => {
     `);
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function validateAvatarId(data: any, callback: (data: any) => void) {
+    const avatarId = data.avatarId;
+    if (!avatarId || !avatarStateManager.getAvatarById(avatarId)) {
+        return; // Abort if avatarId is invalid
+    }
 
+    // If valid, invoke the callback with avatarId
+    callback(data);
+}
 
 io.on('connection', (socket) => {
     console.log('a user connected');
@@ -49,11 +58,11 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
-    socket.on('handleCollectItem', () => {
-        const items = itemsStateManager.getItems();
-        const avatars = avatarStateManager.getAvatars();
-        Object.keys(avatars).forEach((avatarKey) => {
-            const avatar = avatars[avatarKey];
+    socket.on('handleCollectItem', (data) => {
+        validateAvatarId(data, (data) => {
+            const avatarId = data.avatarId;
+            const items = itemsStateManager.getItems();
+            const avatar = avatarStateManager.getAvatarById(avatarId);
             Object.keys(items).forEach((key) => {
                 const item = items[key];
                 if (avatar.isCollidedWith(item)) {
@@ -63,13 +72,13 @@ io.on('connection', (socket) => {
                     itemsStateManager.consumeItem(key);
                 }
             });
+            broadcast();
         })
-
-        broadcast();
     })
 
     socket.on('handleEnemiesMoveTowardsAvatar', () => {
         const enemiesMap = enemiesStateManager.getEnemies();
+        // TODO make enemy move towards the avatar whose client created the enemy
         const firstAvatar = avatarStateManager.getFirstAvatar();
         Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
@@ -96,69 +105,74 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
-    socket.on('handleAvatarAttackEnemiesEvent', () => {
-        const enemiesMap = enemiesStateManager.getEnemies();
-        const avatarsMap = avatarStateManager.getAvatars();
-        Object.keys(avatarsMap).forEach((avatarKey) => {
-            const user = avatarsMap[avatarKey];
+    socket.on('handleAvatarAttackEnemiesEvent', (data) => {
+        validateAvatarId(data, (data) => {
+            const avatarId = data.avatarId;
+            const enemiesMap = enemiesStateManager.getEnemies();
+            const avatar = avatarStateManager.getAvatarById(avatarId);
+
             Object.keys(enemiesMap).forEach((key) => {
                 const enemy = enemiesMap[key];
                 if (enemy === undefined) {
                     return;
                 }
-                if (enemy.isCollidedWith(user, AVATAR_ATTACK_ENEMY_RANGE)) {
+                if (enemy.isCollidedWith(avatar, AVATAR_ATTACK_ENEMY_RANGE)) {
                     enemiesStateManager.killEnemy(key);
                 }
             });
-        });
-        broadcast();
+            broadcast();
+        })
     })
 
     socket.on('handleUserKeyDown', (data) => {
-        const key = data.key as string;
-        const id = data.id as string;
-        handleKeyDown(id, key);
+        validateAvatarId(data, (data) => {
+            const key = data.key as string;
+            const avatarId = data.avatarId as string;
+            const avatarKeys = avatarStateManager.getAvatarActionById(avatarId);
+            if (avatarKeys == undefined || avatarKeys == null) {
+                return;
+            }
+            if (key in avatarKeys) {
+                avatarKeys[key] = true;
+            }
+        });
     });
 
     socket.on('handleUserKeyUp', (data) => {
-        const key = data.key as string;
-        const id = data.id as string;
-        handleKeyUp(id, key);
+        validateAvatarId(data, (data) => {
+            const key = data.key as string;
+            const avatarId = data.avatarId as string;
+            const avatarKeys = avatarStateManager.getAvatarActionById(avatarId);
+            if (avatarKeys == undefined || avatarKeys == null) {
+                return;
+            }
+            if (key in avatarKeys) {
+                avatarKeys[key] = false;
+            }
+        });
     });
 
-    socket.on('handleMoveAvatar', async (id: string) => {
-        const avatar = avatarStateManager.getAvatars()[id];
-        const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
-        if (avatarKeys.ArrowLeft) {
-            avatar.moveLeft();
-          }
-          if (avatarKeys.ArrowRight) {
-            avatar.moveRight();
-          }
-          if (avatarKeys.ArrowUp) {
-            avatar.moveUp();
-          }
-          if (avatarKeys.ArrowDown) {
-            avatar.moveDown();
-          }
+    socket.on('handleMoveAvatar', async (data) => {
+        validateAvatarId(data, (data) => {
+            const avatarId = data.avatarId;
+            const avatar = avatarStateManager.getAvatarById(avatarId);
+            const avatarKeys = avatarStateManager.getAvatarActionById(avatarId);
+            if (avatarKeys.ArrowLeft) {
+                avatar.moveLeft();
+            }
+            if (avatarKeys.ArrowRight) {
+                avatar.moveRight();
+            }
+            if (avatarKeys.ArrowUp) {
+                avatar.moveUp();
+            }
+            if (avatarKeys.ArrowDown) {
+                avatar.moveDown();
+            }
+        });
+
     })
 });
-
-function handleKeyDown(id: string, key: string) {
-    const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
-    if (key in avatarKeys) {
-        avatarKeys[key] = true;
-    }
-    // TODO Handle other keys for menu, debug tool, etc.
-}
-
-function handleKeyUp(id: string, key: string) {
-    const avatarKeys = avatarStateManager.getAvatarActionMap()[id];
-    if (key in avatarKeys) {
-        avatarKeys[key] = false;
-    }
-    // TODO Handle other key up events
-}
 
 function broadcast() {
     io.emit('update', {
