@@ -5,6 +5,7 @@ import enemiesStateManager from './states/EnemyStateManager';
 import { itemsStateManager } from './states/ItemStateManager';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE } from './Constants';
 import avatarStateManager from './states/AvatarStateManager';
+import { HANDLE_AVATAR_ATTACK_ENEMIES, HANDLE_COLLECT_ITEM, HANDLE_ENEMIES_ATTACK_AVATAR, HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_MOVE_AVATAR, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, UPDATE } from './Events';
 
 
 const app = express();
@@ -48,17 +49,17 @@ io.on('connection', (socket) => {
         avatarStateManager.removeAvatar(socket.id);
     });
 
-    socket.on('handleGenerateNewEnemy', () => {
+    socket.on(HANDLE_GENERATE_NEW_ENEMY, () => {
         enemiesStateManager.addEnemy();
         broadcast();
     });
 
-    socket.on('handleGenerateNewItem', () => {
+    socket.on(HANDLE_GENERATE_NEW_ITEM, () => {
         itemsStateManager.addItem();
         broadcast();
     })
 
-    socket.on('handleCollectItem', (data) => {
+    socket.on(HANDLE_COLLECT_ITEM, (data) => {
         validateAvatarId(data, (data) => {
             const avatarId = data.avatarId;
             const items = itemsStateManager.getItems();
@@ -76,7 +77,7 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('handleEnemiesMoveTowardsAvatar', () => {
+    socket.on(HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, () => {
         const enemiesMap = enemiesStateManager.getEnemies();
         // TODO make enemy move towards the avatar whose client created the enemy
         const firstAvatar = avatarStateManager.getFirstAvatar();
@@ -87,7 +88,7 @@ io.on('connection', (socket) => {
         broadcast();
     });
 
-    socket.on('handleEnemiesAttackAvatar', () => {
+    socket.on(HANDLE_ENEMIES_ATTACK_AVATAR, () => {
         const enemiesMap = enemiesStateManager.getEnemies();
         const avatarsMap = avatarStateManager.getAvatars();
         Object.keys(avatarsMap).forEach((avatarKey) => {
@@ -105,7 +106,7 @@ io.on('connection', (socket) => {
         broadcast();
     })
 
-    socket.on('handleAvatarAttackEnemiesEvent', (data) => {
+    socket.on(HANDLE_AVATAR_ATTACK_ENEMIES, (data) => {
         validateAvatarId(data, (data) => {
             const avatarId = data.avatarId;
             const enemiesMap = enemiesStateManager.getEnemies();
@@ -124,7 +125,7 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on('handleUserKeyDown', (data) => {
+    socket.on(HANDLE_USER_KEY_DOWN, (data) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
@@ -138,7 +139,7 @@ io.on('connection', (socket) => {
         });
     });
 
-    socket.on('handleUserKeyUp', (data) => {
+    socket.on(HANDLE_USER_KEY_UP, (data) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
@@ -152,7 +153,7 @@ io.on('connection', (socket) => {
         });
     });
 
-    socket.on('handleMoveAvatar', async (data) => {
+    socket.on(HANDLE_MOVE_AVATAR, async (data) => {
         validateAvatarId(data, (data) => {
             const avatarId = data.avatarId;
             const avatar = avatarStateManager.getAvatarById(avatarId);
@@ -175,7 +176,7 @@ io.on('connection', (socket) => {
 });
 
 function broadcast() {
-    io.emit('update', {
+    io.emit(UPDATE, {
         'enemies': enemiesStateManager.serialize(),
         'avatars': avatarStateManager.serialize(),
         'items': itemsStateManager.serialize()
