@@ -2,14 +2,14 @@ import avatarStateManager from "../AvatarStateManager";
 
 describe('add', () => {
   it('addAvatar should create new enemy', () => {
-    avatarStateManager.addAvatar("test", 400, 400);
+    avatarStateManager.addAvatar("test");
     const avatarKeys = Object.keys(avatarStateManager.getAvatars());
     expect(avatarKeys.length).toBe(1);
 
   });
 
   it('addAvatar should create default action map', () => {
-    avatarStateManager.addAvatar("test", 400, 400);
+    avatarStateManager.addAvatar("test");
     const actionMap = avatarStateManager.getAvatarActionMap();
     const avatarActionMapKeys = Object.keys(actionMap);
     expect(avatarActionMapKeys.length).toBe(1);
