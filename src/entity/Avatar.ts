@@ -47,6 +47,10 @@ class Avatar extends Entity {
       hp: this.hp,
     };
   }
+
+  getHp(): number {
+    return this.hp;
+  }
 }
 
 export { Avatar };
