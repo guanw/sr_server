@@ -70,6 +70,7 @@ io.on('connection', (socket) => {
                     if (item.getType() === 'bomb') {
                         enemiesStateManager.destroyAllEnemies();
                     }
+                    // TODO handle consume potion
                     itemsStateManager.consumeItem(key);
                 }
             });

@@ -51,4 +51,5 @@ class ItemsStateManager {
 
 }
 
-export const itemsStateManager = new ItemsStateManager();
+const itemsStateManager = new ItemsStateManager();
+export default itemsStateManager;
