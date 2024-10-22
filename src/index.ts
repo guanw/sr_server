@@ -2,7 +2,7 @@ import express from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
-import { itemsStateManager } from './states/ItemStateManager';
+import itemsStateManager from './states/ItemStateManager';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE, CLEANUP_INTERVAL } from './Constants';
 import avatarStateManager from './states/AvatarStateManager';
 import { HANDLE_AVATAR_ATTACK_ENEMIES, HANDLE_COLLECT_ITEM, HANDLE_ENEMIES_ATTACK_AVATAR, HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_MOVE_AVATAR, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, UPDATE } from './Events';
