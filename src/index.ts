@@ -1,4 +1,4 @@
-import express from 'express';
+import express, {Request, Response} from 'express';
 import * as http from 'http';
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
@@ -17,7 +17,7 @@ const io = new Server(server, {
     }
 });
 
-app.get('/', (_req, res) => {
+app.get('/', (_req: Request, res: Response) => {
     const enemies = JSON.stringify(enemiesStateManager.serialize());
     const avatars = JSON.stringify(avatarStateManager.serialize());
     const items = JSON.stringify(itemsStateManager.serialize());
@@ -28,6 +28,12 @@ app.get('/', (_req, res) => {
         <p>items: ${items}</p>
     `);
 });
+
+app.get('/setup', (_req: Request, res: Response) => {
+    res.json({
+        'background_tile_url': 'https://guanw.github.io/sr_assets/environment/ground/1.png'
+    })
+})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateAvatarId(data: any, callback: (data: any) => void) {
