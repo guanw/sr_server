@@ -1,5 +1,5 @@
 import request from 'supertest';
-import httpApp, { BACKGROUND_TILE_URL } from '../httpApp';
+import httpApp, { AVATAR_URL, BACKGROUND_TILE_URL, BOMB_URL, ENEMY_URL, POTION_URL, WIND_URL } from '../httpApp';
 import * as http from 'http';
 
 let server: http.Server;
@@ -25,9 +25,15 @@ describe('GET /', () => {
 });
 
 describe('GET /setup', () => {
-  it('should return JSON with background_tile_url', async () => {
+  it('should return JSON with different asset urls', async () => {
     const response = await request(server).get('/setup');
+
     expect(response.status).toBe(200);
     expect(response.body).toHaveProperty('background_tile_url', BACKGROUND_TILE_URL);
+    expect(response.body).toHaveProperty('enemy_url', ENEMY_URL);
+    expect(response.body).toHaveProperty('avatar_url', AVATAR_URL);
+    expect(response.body).toHaveProperty('bomb_url', BOMB_URL);
+    expect(response.body).toHaveProperty('wind_url', WIND_URL);
+    expect(response.body).toHaveProperty('potion_url', POTION_URL);
   });
 });
