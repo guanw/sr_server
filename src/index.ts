@@ -1,4 +1,4 @@
-import express, {Request, Response} from 'express';
+
 import * as http from 'http';
 import { Server } from 'socket.io';
 import enemiesStateManager from './states/EnemyStateManager';
@@ -6,10 +6,11 @@ import itemsStateManager from './states/ItemStateManager';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE, CLEANUP_INTERVAL } from './Constants';
 import avatarStateManager from './states/AvatarStateManager';
 import { HANDLE_AVATAR_ATTACK_ENEMIES, HANDLE_COLLECT_ITEM, HANDLE_ENEMIES_ATTACK_AVATAR, HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_MOVE_AVATAR, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, UPDATE } from './Events';
+import httpApp from './httpApp';
 
 
-const app = express();
-const server = http.createServer(app);
+
+const server = http.createServer(httpApp);
 const io = new Server(server, {
     cors: {
         origin: "*",
@@ -17,23 +18,7 @@ const io = new Server(server, {
     }
 });
 
-app.get('/', (_req: Request, res: Response) => {
-    const enemies = JSON.stringify(enemiesStateManager.serialize());
-    const avatars = JSON.stringify(avatarStateManager.serialize());
-    const items = JSON.stringify(itemsStateManager.serialize());
-    res.send(`
-        <h1>debugging info</h1>
-        <p>enemies: ${enemies}</p>
-        <p>avatar: ${avatars}</p>
-        <p>items: ${items}</p>
-    `);
-});
 
-app.get('/setup', (_req: Request, res: Response) => {
-    res.json({
-        'background_tile_url': 'https://guanw.github.io/sr_assets/environment/ground/1.png'
-    })
-})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateAvatarId(data: any, callback: (data: any) => void) {
