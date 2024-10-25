@@ -1,4 +1,5 @@
 import express, {Request, Response} from 'express';
+import cors from 'cors';
 import enemiesStateManager from './states/EnemyStateManager';
 import avatarStateManager from './states/AvatarStateManager';
 import itemsStateManager from './states/ItemStateManager';
@@ -18,6 +19,8 @@ export const PILLAR_MIDDLE_TILING_URL = "https://guanw.github.io/sr_assets/envir
 export const PILLAR_BOTTOM_TILING_URL = "https://guanw.github.io/sr_assets/environment/pillar/3.png";
 
 const httpApp = express();
+httpApp.use(cors());
+
 // TODO enable re-randomization of static tiling
 const tilings_location = [];
 for (let i = 0; i < SAND_TILING_COUNT; i++) {
