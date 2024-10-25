@@ -9,6 +9,11 @@ export const AVATAR_URL = 'https://guanw.github.io/sr_assets/avatar.png';
 export const BOMB_URL = 'https://guanw.github.io/sr_assets/bomb.png';
 export const WIND_URL = 'https://guanw.github.io/sr_assets/smoke/px_5.png';
 export const POTION_URL = 'https://guanw.github.io/sr_assets/items/Potion01.png';
+export const BASE_TILING_URL = 'https://guanw.github.io/sr_assets/environment/ground/1.png';
+export const RANDOM_TILING_URL = 'https://guanw.github.io/sr_assets/environment/ground/3.png';
+export const PILLAR_TOP_TILING_URL = "https://guanw.github.io/sr_assets/environment/pillar/1.png";
+export const PILLAR_MIDDLE_TILING_URL = "https://guanw.github.io/sr_assets/environment/pillar/2.png";
+export const PILLAR_BOTTOM_TILING_URL = "https://guanw.github.io/sr_assets/environment/pillar/3.png";
 
 const httpApp = express();
 httpApp.get('/', (_req: Request, res: Response) => {
@@ -31,6 +36,11 @@ httpApp.get('/setup', (_req: Request, res: Response) => {
         'wind_url': WIND_URL,
         'bomb_url': BOMB_URL,
         'potion_url': POTION_URL,
+        'base_tiling_url': BASE_TILING_URL,
+        'random_tiling_url': RANDOM_TILING_URL,
+        'pillar_top_tiling_url': PILLAR_TOP_TILING_URL,
+        'pillar_middle_tiling_url': PILLAR_MIDDLE_TILING_URL,
+        'pillar_bottom_tiling_url': PILLAR_BOTTOM_TILING_URL,
     })
 })
 
