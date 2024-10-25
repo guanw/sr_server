@@ -1,4 +1,4 @@
-import { GAME_WIDTH, GAME_HEIGHT, ENEMY_ATTACK_VALUE } from "../Constants";
+import { GAME_SIZE, ENEMY_ATTACK_VALUE } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface AvatarObject {
@@ -13,8 +13,8 @@ class Avatar extends Entity {
   private hp: number;
   constructor() {
     super();
-    this.x = Math.random() * GAME_WIDTH - GAME_WIDTH / 2;
-    this.y = Math.random() * GAME_HEIGHT - GAME_HEIGHT / 2;
+    this.x = Math.random() * GAME_SIZE - GAME_SIZE / 2;
+    this.y = Math.random() * GAME_SIZE - GAME_SIZE / 2;
     this.hp = 100;
   }
 

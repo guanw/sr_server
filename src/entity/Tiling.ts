@@ -1,20 +1,26 @@
 import { GAME_SIZE } from "../Constants";
 import { Entity } from "./Entity";
 
-export interface ItemObject {
+export enum TILING {
+  SAND = "SAND",
+  PILLAR = "PILLAR",
+}
+
+export interface TilingObject {
     x: number;
     y: number;
     type: string;
-  };
+};
 
-class Item extends Entity {
+class Tiling extends Entity {
     private x: number;
     private y: number;
     private type: string;
     constructor(type: string) {
       super();
-      this.x = Math.random() * GAME_SIZE - GAME_SIZE / 2;
-      this.y = Math.random() * GAME_SIZE - GAME_SIZE / 2;
+      const WORLD_SIZE = GAME_SIZE * 15;
+      this.x = Math.random() * WORLD_SIZE;
+      this.y = Math.random() * WORLD_SIZE;
       this.type = type;
     }
 
@@ -39,7 +45,7 @@ class Item extends Entity {
       this.y = y;
     }
 
-    public serialize(): ItemObject {
+    public serialize(): TilingObject {
       return {
         x: this.getX(),
         y: this.getY(),
@@ -48,4 +54,4 @@ class Item extends Entity {
     }
 }
 
-export { Item };
+export { Tiling };

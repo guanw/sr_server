@@ -29,16 +29,20 @@ describe('GET /setup', () => {
     const response = await request(server).get('/setup');
 
     expect(response.status).toBe(200);
-    expect(response.body).toHaveProperty('background_tile_url', BACKGROUND_TILE_URL);
-    expect(response.body).toHaveProperty('enemy_url', ENEMY_URL);
-    expect(response.body).toHaveProperty('avatar_url', AVATAR_URL);
-    expect(response.body).toHaveProperty('bomb_url', BOMB_URL);
-    expect(response.body).toHaveProperty('wind_url', WIND_URL);
-    expect(response.body).toHaveProperty('potion_url', POTION_URL);
-    expect(response.body).toHaveProperty('base_tiling_url', BASE_TILING_URL);
-    expect(response.body).toHaveProperty('random_tiling_url', RANDOM_TILING_URL);
-    expect(response.body).toHaveProperty('pillar_top_tiling_url', PILLAR_TOP_TILING_URL);
-    expect(response.body).toHaveProperty('pillar_middle_tiling_url', PILLAR_MIDDLE_TILING_URL);
-    expect(response.body).toHaveProperty('pillar_bottom_tiling_url', PILLAR_BOTTOM_TILING_URL);
+    const assets = response.body.assets;
+    expect(assets).toHaveProperty('background_tile_url', BACKGROUND_TILE_URL);
+    expect(assets).toHaveProperty('enemy_url', ENEMY_URL);
+    expect(assets).toHaveProperty('avatar_url', AVATAR_URL);
+    expect(assets).toHaveProperty('bomb_url', BOMB_URL);
+    expect(assets).toHaveProperty('wind_url', WIND_URL);
+    expect(assets).toHaveProperty('potion_url', POTION_URL);
+    expect(assets).toHaveProperty('base_tiling_url', BASE_TILING_URL);
+    expect(assets).toHaveProperty('random_tiling_url', RANDOM_TILING_URL);
+    expect(assets).toHaveProperty('pillar_top_tiling_url', PILLAR_TOP_TILING_URL);
+    expect(assets).toHaveProperty('pillar_middle_tiling_url', PILLAR_MIDDLE_TILING_URL);
+    expect(assets).toHaveProperty('pillar_bottom_tiling_url', PILLAR_BOTTOM_TILING_URL);
+
+    expect(response.body).toHaveProperty('tilings_location');
+    expect(response.body['tilings_location']).toBeInstanceOf(Array);
   });
 });

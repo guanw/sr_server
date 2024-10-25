@@ -18,8 +18,6 @@ const io = new Server(server, {
     }
 });
 
-
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateAvatarId(data: any, callback: (data: any) => void) {
     const avatarId = data.avatarId;
