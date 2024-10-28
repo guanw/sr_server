@@ -12,7 +12,8 @@ export const ENEMY_ATTACK_AVATAR_RANGE = 15;
 
 // tiling
 export const SAND_TILING_COUNT = 1000;
-export const PILLAR_TILING_COUNT = 100;
+export const PILLAR_TILING_COUNT = 1000;
+export const TILING_SIZE = 16;
 
 // misc
 export const CLEANUP_INTERVAL = 6000;

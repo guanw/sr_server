@@ -1,11 +1,6 @@
 import { GAME_SIZE } from "../Constants";
 import { Entity } from "./Entity";
 
-export enum TILING {
-  SAND = "SAND",
-  PILLAR = "PILLAR",
-}
-
 export interface TilingObject {
     x: number;
     y: number;
@@ -16,11 +11,11 @@ class Tiling extends Entity {
     private x: number;
     private y: number;
     private type: string;
-    constructor(type: string) {
+    constructor(type: string, xOverride: number | undefined = undefined, yOverride: number | undefined = undefined) {
       super();
       const WORLD_SIZE = GAME_SIZE * 15;
-      this.x = Math.random() * WORLD_SIZE;
-      this.y = Math.random() * WORLD_SIZE;
+      this.x = xOverride ?? Math.random() * WORLD_SIZE;
+      this.y = yOverride ?? Math.random() * WORLD_SIZE;
       this.type = type;
     }
 

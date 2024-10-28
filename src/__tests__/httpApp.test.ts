@@ -21,6 +21,7 @@ describe('GET /', () => {
     expect(response.text).toContain('enemies:');
     expect(response.text).toContain('avatar:');
     expect(response.text).toContain('items:');
+    expect(response.text).toContain('tilings');
   });
 });
 
@@ -42,7 +43,7 @@ describe('GET /setup', () => {
     expect(assets).toHaveProperty('pillar_middle_tiling_url', PILLAR_MIDDLE_TILING_URL);
     expect(assets).toHaveProperty('pillar_bottom_tiling_url', PILLAR_BOTTOM_TILING_URL);
 
-    expect(response.body).toHaveProperty('tilings_location');
-    expect(response.body['tilings_location']).toBeInstanceOf(Array);
+    expect(response.body).toHaveProperty('tilings');
+    expect(response.body['tilings']).toBeInstanceOf(Object);
   });
 });
