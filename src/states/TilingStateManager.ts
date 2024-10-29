@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
 import { SAND_TILING_COUNT, PILLAR_TILING_COUNT, GAME_SIZE, TILING_SIZE } from "../Constants";
 import { Tiling, TilingObject } from "../entity/Tiling";
+import Utils from "../Utils";
 
 type TilingsMap = { [key: string]: Tiling };
 type TilingsSerialization = { [key: string]: TilingObject };
@@ -18,19 +18,19 @@ class TilingStateManager {
     const WORLD_SIZE = GAME_SIZE * 15;
 
     for (let i = 0; i < SAND_TILING_COUNT; i++) {
-        const uuid = uuidv4();
+        const uuid = Utils.genUID();
         this.tilings[uuid] = new Tiling(TILING.SAND);
     }
     for (let i = 0; i < PILLAR_TILING_COUNT; i++) {
         const baseX = Math.random() * WORLD_SIZE;
         const baseY = Math.random() * WORLD_SIZE;
-        let uuid = uuidv4();
+        let uuid = Utils.genUID();
         this.tilings[uuid] = new Tiling(TILING.BOTTOM_PILLAR, baseX, baseY);
 
-        uuid = uuidv4();
+        uuid = Utils.genUID();
         this.tilings[uuid] = new Tiling(TILING.MIDDLE_PILLAR, baseX, baseY + TILING_SIZE);
 
-        uuid = uuidv4();
+        uuid = Utils.genUID();
         this.tilings[uuid] = new Tiling(TILING.TOP_PILLAR, baseX, baseY + TILING_SIZE * 2);
     }
   }

@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
 import { Item, ItemObject } from "../entity/Item";
+import Utils from "../Utils";
 
 type ItemsMap = { [key: string]: Item };
 type ItemsSerialization = { [key: string]: ItemObject };
@@ -11,7 +11,7 @@ class ItemsStateManager {
   }
 
   public addItem() {
-    const uuid = uuidv4();
+    const uuid = Utils.genUID();
     const n = this.getRandomInteger(2);
     switch (n) {
       case 1:

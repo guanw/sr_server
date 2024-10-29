@@ -1,5 +1,5 @@
 import { Enemy, EnemyObject } from "../entity/Enemy";
-import { v4 as uuidv4 } from "uuid";
+import Utils from "../Utils";
 
 type EnemiesMap = { [key: string]: Enemy };
 type EnemiesSerialization = { [key: string]: EnemyObject };
@@ -12,7 +12,7 @@ class EnemiesStateManager {
     }
 
     public addEnemy() {
-      const uuid = uuidv4();
+      const uuid = Utils.genUID();
       this.enemiesMap[uuid] = new Enemy();
     }
 
