@@ -72,6 +72,9 @@ io.on('connection', (socket) => {
         const enemiesMap = enemiesStateManager.getEnemies();
         // TODO make enemy move towards the avatar whose client created the enemy
         const firstAvatar = avatarStateManager.getFirstAvatar();
+        if (firstAvatar == null) {
+            return;
+        }
         Object.keys(enemiesMap).forEach((key) => {
             const enemy = enemiesMap[key];
             enemy.moveTowardsAvatar(firstAvatar.getX(), firstAvatar.getY());
