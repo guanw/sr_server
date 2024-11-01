@@ -1,4 +1,4 @@
-import { GAME_SIZE, AVATAR_DISPLACEMENT, ENEMY_SPEED } from "../Constants";
+import { GAME_WINDOW_SIZE, AVATAR_DISPLACEMENT, ENEMY_SPEED } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface EnemyObject {
@@ -11,8 +11,8 @@ class Enemy extends Entity {
   private y: number;
   constructor() {
     super();
-    this.x = Math.random() * GAME_SIZE - GAME_SIZE / 2;
-    this.y = Math.random() * GAME_SIZE - GAME_SIZE / 2;
+    this.x = Math.random() * GAME_WINDOW_SIZE - GAME_WINDOW_SIZE / 2;
+    this.y = Math.random() * GAME_WINDOW_SIZE - GAME_WINDOW_SIZE / 2;
   }
 
   getX(): number {

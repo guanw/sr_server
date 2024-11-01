@@ -1,4 +1,4 @@
-import { SAND_TILING_COUNT, PILLAR_TILING_COUNT, GAME_SIZE, TILING_SIZE } from "../Constants";
+import { SAND_TILING_COUNT, PILLAR_TILING_COUNT, GAME_WINDOW_SIZE, TILING_SIZE, WORLD_SIZE_EXPANSION } from "../Constants";
 import { Tiling, TilingObject } from "../entity/Tiling";
 import Utils from "../Utils";
 
@@ -15,7 +15,7 @@ class TilingStateManager {
   private tilings: TilingsMap;
   public constructor() {
     this.tilings = {};
-    const WORLD_SIZE = GAME_SIZE * 15;
+    const WORLD_SIZE = GAME_WINDOW_SIZE * WORLD_SIZE_EXPANSION;
 
     for (let i = 0; i < SAND_TILING_COUNT; i++) {
         const uuid = Utils.genUID();

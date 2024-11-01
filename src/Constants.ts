@@ -1,4 +1,5 @@
-export const GAME_SIZE = 800;
+export const GAME_WINDOW_SIZE = 800;
+export const WORLD_SIZE_EXPANSION = 7;
 
 
 // avatar related
@@ -11,8 +12,8 @@ export const ENEMY_ATTACK_VALUE = 10;
 export const ENEMY_ATTACK_AVATAR_RANGE = 15;
 
 // tiling
-export const SAND_TILING_COUNT = 1000;
-export const PILLAR_TILING_COUNT = 1000;
+export const SAND_TILING_COUNT = 100;
+export const PILLAR_TILING_COUNT = 100;
 export const TILING_SIZE = 16;
 
 // misc

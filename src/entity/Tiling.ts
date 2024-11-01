@@ -1,4 +1,4 @@
-import { GAME_SIZE } from "../Constants";
+import { GAME_WINDOW_SIZE, WORLD_SIZE_EXPANSION } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface TilingObject {
@@ -13,7 +13,7 @@ class Tiling extends Entity {
     private type: string;
     constructor(type: string, xOverride: number | undefined = undefined, yOverride: number | undefined = undefined) {
       super();
-      const WORLD_SIZE = GAME_SIZE * 15;
+      const WORLD_SIZE = GAME_WINDOW_SIZE * WORLD_SIZE_EXPANSION;
       this.x = xOverride ?? Math.random() * WORLD_SIZE;
       this.y = yOverride ?? Math.random() * WORLD_SIZE;
       this.type = type;

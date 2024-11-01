@@ -1,4 +1,4 @@
-import { GAME_SIZE } from "../Constants";
+import { GAME_WINDOW_SIZE } from "../Constants";
 import { Entity } from "./Entity";
 
 export interface ItemObject {
@@ -13,8 +13,8 @@ class Item extends Entity {
     private type: string;
     constructor(type: string) {
       super();
-      this.x = Math.random() * GAME_SIZE - GAME_SIZE / 2;
-      this.y = Math.random() * GAME_SIZE - GAME_SIZE / 2;
+      this.x = Math.random() * GAME_WINDOW_SIZE - GAME_WINDOW_SIZE / 2;
+      this.y = Math.random() * GAME_WINDOW_SIZE - GAME_WINDOW_SIZE / 2;
       this.type = type;
     }
 
