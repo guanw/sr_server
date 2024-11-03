@@ -4,6 +4,7 @@ import enemiesStateManager from './states/EnemyStateManager';
 import avatarStateManager from './states/AvatarStateManager';
 import itemsStateManager from './states/ItemStateManager';
 import tilingStateManager from './states/TilingStateManager';
+import gameStateManager from './states/GameStateManager';
 
 export const BACKGROUND_TILE_URL = 'https://guanw.github.io/sr_assets/environment/ground/1.png';
 export const ENEMY_URL = 'https://guanw.github.io/sr_assets/slime_run.png';
@@ -27,8 +28,10 @@ httpApp.get('/', (_req: Request, res: Response) => {
     const avatars = JSON.stringify(avatarStateManager.serialize());
     const items = JSON.stringify(itemsStateManager.serialize());
     const tilings = JSON.stringify(tilingStateManager.serialize());
+    const gameStopped = gameStateManager.gameStopped();
     res.send(`
         <h1>debugging info</h1>
+        <p>is game stopped: ${gameStopped} </p>
         <p>enemies: ${enemies}</p>
         <p>avatar: ${avatars}</p>
         <p>items: ${items}</p>

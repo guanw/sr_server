@@ -7,6 +7,7 @@ export const HANDLE_AVATAR_ATTACK_ENEMIES = 'handleAvatarAttackEnemies';
 export const HANDLE_USER_KEY_DOWN = 'handleUserKeyDown';
 export const HANDLE_USER_KEY_UP = 'handleUserKeyUp';
 export const HANDLE_MOVE_AVATAR = 'handleMoveAvatar';
+export const HANDLE_TOGGLE_GAME_PLAY = 'handleToggleGamePlay';
 
 // broadcast
 export const UPDATE = 'update';
