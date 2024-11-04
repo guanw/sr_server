@@ -1,6 +1,7 @@
-import { HANDLE_TOGGLE_GAME_PLAY, UPDATE } from "../Events";
+import { HANDLE_GENERATE_NEW_ENEMY, HANDLE_TOGGLE_GAME_PLAY, UPDATE } from "../Events";
 import { server, io, GameStateSnapShot } from "../socketIOServer";
 import Client from "socket.io-client";
+import gameStateManager from "../states/GameStateManager";
 
 describe("Socket.IO Server", () => {
   let clientSocket;
@@ -30,25 +31,26 @@ describe("Socket.IO Server", () => {
     }
   });
 
-  test("should receive 'messageReceived' event with correct data", (done) => {
+  test("send HANDLE_TOGGLE_GAME_PLAY event", (done) => {
     // pause game
+    const oldValue = gameStateManager.gameStopped();
     clientSocket.emit(HANDLE_TOGGLE_GAME_PLAY);
-    clientSocket.on(UPDATE, (states) => {
-        const parsedStates = states as GameStateSnapShot;
-        expect(parsedStates).not.toBeNull();
-        expect(parsedStates).toHaveProperty('gameStopped', true);
+    clientSocket.on(UPDATE, (states: GameStateSnapShot) => {
+        expect(states).not.toBeNull();
+        expect(states).toHaveProperty('gameStopped', !oldValue);
         done();
     });
-
-    // resume game
-    clientSocket.emit(HANDLE_TOGGLE_GAME_PLAY);
-    clientSocket.on(UPDATE, (states) => {
-        const parsedStates = states as GameStateSnapShot;
-        expect(parsedStates).not.toBeNull();
-        expect(parsedStates).toHaveProperty('gameStopped', false);
-        done();
-    });
-    done();
   });
 
+  test("send HANDLE_GENERATE_NEW_ENEMY event", (done) => {
+    clientSocket.emit(HANDLE_GENERATE_NEW_ENEMY);
+    clientSocket.on(UPDATE, (states: GameStateSnapShot) => {
+        expect(states).not.toBeNull();
+        expect(states).toHaveProperty('enemies');
+        const enemies = states['enemies'];
+        const enemyKeys = Object.keys(enemies);
+        expect(enemyKeys).toHaveLength(1);
+        done();
+    });
+  })
 });
