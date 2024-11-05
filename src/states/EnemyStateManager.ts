@@ -8,7 +8,7 @@ class EnemiesStateManager {
     private enemiesMap: EnemiesMap;
 
     public constructor() {
-      this.enemiesMap = {};
+      this.reset();
     }
 
     public addEnemy() {
@@ -40,6 +40,10 @@ class EnemiesStateManager {
       Object.keys(this.enemiesMap).forEach((key) => {
         this.killEnemy(key);
       });
+    }
+
+    public reset() {
+      this.enemiesMap = {};
     }
 }
 

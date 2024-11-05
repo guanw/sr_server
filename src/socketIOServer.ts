@@ -29,11 +29,9 @@ function validateAvatarId(data: any, callback: (data: any) => void) {
 }
 
 io.on('connection', (socket) => {
-    console.log('a user connected');
     avatarStateManager.addAvatar(socket.id);
 
     socket.on('disconnect', () => {
-        console.log('user disconnected');
         avatarStateManager.removeAvatar(socket.id);
     });
 
@@ -117,7 +115,7 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on(HANDLE_USER_KEY_DOWN, (data) => {
+    socket.on(HANDLE_USER_KEY_DOWN, (data, callback) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
@@ -128,10 +126,11 @@ io.on('connection', (socket) => {
             if (key in avatarKeys) {
                 avatarKeys[key] = true;
             }
+            callback();
         });
     });
 
-    socket.on(HANDLE_USER_KEY_UP, (data) => {
+    socket.on(HANDLE_USER_KEY_UP, (data, callback) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
@@ -142,6 +141,7 @@ io.on('connection', (socket) => {
             if (key in avatarKeys) {
                 avatarKeys[key] = false;
             }
+            callback();
         });
     });
 

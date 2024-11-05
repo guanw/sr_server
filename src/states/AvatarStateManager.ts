@@ -3,10 +3,10 @@ import { Avatar, AvatarObject } from "../entity/Avatar";
 type AvatarsMap = { [key: string]: Avatar };
 type AvatarsActionMap = { [key: string]: AvatarAction };
 type AvatarAction = {
-  ArrowLeft: false,
-  ArrowRight: false,
-  ArrowUp: false,
-  ArrowDown: false,
+  ArrowLeft: boolean,
+  ArrowRight: boolean,
+  ArrowUp: boolean,
+  ArrowDown: boolean,
 }
 type AvatarsSerialization = { [key: string]: AvatarObject };
 
@@ -15,8 +15,7 @@ class AvatarStateManager {
     private avatarsActionMap: AvatarsActionMap;
 
     public constructor() {
-      this.avatarsMap = {};
-      this.avatarsActionMap = {};
+      this.reset();
     }
 
     public addAvatar(id: string) {
@@ -66,6 +65,11 @@ class AvatarStateManager {
     public removeAvatar(avatarKey: string) {
       delete(this.avatarsMap[avatarKey]);
       delete(this.avatarsActionMap[avatarKey]);
+    }
+
+    public reset() {
+      this.avatarsMap = {};
+      this.avatarsActionMap = {};
     }
 }
 

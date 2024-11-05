@@ -7,7 +7,7 @@ type ItemsSerialization = { [key: string]: ItemObject };
 class ItemsStateManager {
   private items: ItemsMap;
   public constructor() {
-    this.items = {};
+    this.reset();
   }
 
   public addItem() {
@@ -49,6 +49,9 @@ class ItemsStateManager {
     delete(this.items[itemKey]);
   }
 
+  public reset() {
+    this.items = {};
+  }
 }
 
 const itemsStateManager = new ItemsStateManager();
