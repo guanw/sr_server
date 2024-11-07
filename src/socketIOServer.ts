@@ -1,7 +1,7 @@
 import * as http from 'http';
 import { Server } from 'socket.io';
 import { ENEMY_ATTACK_AVATAR_RANGE, AVATAR_ATTACK_ENEMY_RANGE } from "./Constants";
-import { HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_COLLECT_ITEM, HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, HANDLE_ENEMIES_ATTACK_AVATAR, HANDLE_AVATAR_ATTACK_ENEMIES, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, HANDLE_TOGGLE_GAME_PLAY, HANDLE_MOVE_AVATAR, UPDATE } from "./Events";
+import { HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_COLLECT_ITEM, HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, HANDLE_ENEMIES_ATTACK_AVATAR, HANDLE_AVATAR_ATTACK_ENEMIES, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, HANDLE_MOVE_AVATAR, UPDATE } from "./Events";
 import httpApp from "./httpApp";
 import avatarStateManager from "./states/AvatarStateManager";
 import enemiesStateManager from "./states/EnemyStateManager";
@@ -115,22 +115,26 @@ io.on('connection', (socket) => {
         })
     })
 
-    socket.on(HANDLE_USER_KEY_DOWN, (data, callback) => {
+    socket.on(HANDLE_USER_KEY_DOWN, (data, callback?: (() => void) | null) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
-            const avatarKeys = avatarStateManager.getAvatarActionById(avatarId);
-            if (avatarKeys == undefined || avatarKeys == null) {
+            const moveKeyTriggered = activateAvatarMoveKey(avatarId, key);
+            if (moveKeyTriggered) {
+                onComplete(callback);
                 return;
             }
-            if (key in avatarKeys) {
-                avatarKeys[key] = true;
+
+            if (activateMenuToggle(key)) {
+                onComplete(callback);
+                return;
             }
-            callback();
+
+            return;
         });
     });
 
-    socket.on(HANDLE_USER_KEY_UP, (data, callback) => {
+    socket.on(HANDLE_USER_KEY_UP, (data, callback?: (() => void) | null) => {
         validateAvatarId(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
@@ -141,14 +145,9 @@ io.on('connection', (socket) => {
             if (key in avatarKeys) {
                 avatarKeys[key] = false;
             }
-            callback();
+            onComplete(callback);
         });
     });
-
-    socket.on(HANDLE_TOGGLE_GAME_PLAY, async() => {
-        gameStateManager.toggle();
-        broadcast();
-    })
 
     socket.on(HANDLE_MOVE_AVATAR, async (data) => {
         validateAvatarId(data, (data) => {
@@ -171,6 +170,33 @@ io.on('connection', (socket) => {
 
     })
 });
+
+function onComplete(callback?: (() => void) | null) {
+    if (callback) {
+        callback();
+    }
+};
+
+/* return true if moveKey is triggered otherwise false*/
+function activateAvatarMoveKey(avatarId: string, key: string) :boolean {
+    const avatarKeys = avatarStateManager.getAvatarActionById(avatarId);
+    if (avatarKeys == undefined || avatarKeys == null) {
+        return false;
+    }
+    if (key in avatarKeys) {
+        avatarKeys[key] = true;
+        return true;
+    }
+    return false
+}
+
+function activateMenuToggle(key: string) :boolean {
+    if (key === 'm' || key === 'M') {
+        gameStateManager.toggle();
+        return true;
+    }
+    return false;
+}
 
 function broadcast() {
     io.emit(UPDATE, {

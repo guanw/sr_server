@@ -1,7 +1,6 @@
-import { HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_TOGGLE_GAME_PLAY, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, UPDATE } from "../Events";
+import { HANDLE_GENERATE_NEW_ENEMY, HANDLE_GENERATE_NEW_ITEM, HANDLE_USER_KEY_DOWN, HANDLE_USER_KEY_UP, UPDATE } from "../Events";
 import { server, io, GameStateSnapShot } from "../socketIOServer";
 import Client from "socket.io-client";
-import gameStateManager from "../states/GameStateManager";
 import avatarStateManager from "../states/AvatarStateManager";
 import itemsStateManager from "../states/ItemStateManager";
 import enemiesStateManager from "../states/EnemyStateManager";
@@ -36,17 +35,6 @@ describe("Socket.IO Server", () => {
     if (clientSocket.connected) {
       clientSocket.disconnect();
     }
-  });
-
-  test("send HANDLE_TOGGLE_GAME_PLAY event", (done) => {
-    // pause game
-    const oldValue = gameStateManager.gameStopped();
-    clientSocket.emit(HANDLE_TOGGLE_GAME_PLAY);
-    clientSocket.on(UPDATE, (states: GameStateSnapShot) => {
-        expect(states).not.toBeNull();
-        expect(states).toHaveProperty('gameStopped', !oldValue);
-        done();
-    });
   });
 
   test("send HANDLE_GENERATE_NEW_ENEMY event", (done) => {
