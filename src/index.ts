@@ -2,7 +2,7 @@ import { CLEANUP_INTERVAL } from './Constants';
 import {server} from './socketIOServer';
 import avatarStateManager from './states/AvatarStateManager';
 
-server.listen(3000, () => {
+server.listen(3000, '0.0.0.0', () => {
     console.log('listening on *:3000');
 
     startCleanupInterval();
