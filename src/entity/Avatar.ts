@@ -1,7 +1,7 @@
 import { GAME_WINDOW_SIZE, ENEMY_ATTACK_VALUE } from "../Constants";
 import { Entity } from "./Entity";
 
-export interface AvatarObject {
+export type AvatarObject = {
   x: number;
   y: number;
   hp: number;
@@ -40,12 +40,12 @@ class Avatar extends Entity {
     this.hp -= ENEMY_ATTACK_VALUE;
   }
 
-  serialize(): AvatarObject {
+  serialize<AvatarObject>(): AvatarObject {
     return {
       x: this.x,
       y: this.y,
       hp: this.hp,
-    };
+    } as unknown as AvatarObject;
   }
 
   getHp(): number {

@@ -40,12 +40,12 @@ class Tiling extends Entity {
       this.y = y;
     }
 
-    public serialize(): TilingObject {
+    public serialize<TilingObject>(): TilingObject {
       return {
         x: this.getX(),
         y: this.getY(),
         type: this.type,
-      }
+      } as unknown as TilingObject;
     }
 }
 

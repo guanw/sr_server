@@ -1,6 +1,9 @@
 
 const AVATAR_SPEED = 3;
-export abstract class Entity {
+export abstract class Entity implements Serializable {
+  serialize<T>(): T {
+    throw new Error("Method not implemented.");
+  }
   public abstract getX(): number;
   public abstract getY(): number;
   public abstract setDeltaX(x: number): void;
@@ -33,4 +36,8 @@ export abstract class Entity {
     );
     return distance <= range;
   }
+}
+
+export interface Serializable {
+  serialize<T>():T;
 }

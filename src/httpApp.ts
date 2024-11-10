@@ -23,9 +23,14 @@ httpApp.use(cors());
 
 // TODO enable re-randomization of static tiling
 
-httpApp.get('/', (_req: Request, res: Response) => {
+httpApp.get('/', (req: Request, res: Response) => {
+    const room = req.query.room;
+    if (!room) {
+        res.send(`You must pass 'room' param as GET request`);
+        return;
+    }
     const enemies = JSON.stringify(enemiesStateManager.serialize());
-    const avatars = JSON.stringify(avatarStateManager.serialize());
+    const avatars = JSON.stringify(avatarStateManager.serialize(room));
     const items = JSON.stringify(itemsStateManager.serialize());
     const tilings = JSON.stringify(tilingStateManager.serialize());
     const gameStopped = gameStateManager.gameStopped();

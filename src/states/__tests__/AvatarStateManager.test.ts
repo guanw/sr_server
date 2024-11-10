@@ -1,30 +1,31 @@
 import avatarStateManager from "../AvatarStateManager";
 
 describe('add', () => {
+  const roomNumber = "1";
   it('addAvatar should create new enemy', () => {
-    avatarStateManager.addAvatar("test");
-    const avatarKeys = Object.keys(avatarStateManager.getAvatars());
+    avatarStateManager.addAvatar(roomNumber, "test");
+    const avatarKeys = Object.keys(avatarStateManager.getAvatars(roomNumber));
     expect(avatarKeys.length).toBe(1);
 
   });
 
   it('addAvatar should create default action map', () => {
-    avatarStateManager.addAvatar("test");
+    avatarStateManager.addAvatar(roomNumber, "test");
     const actionMap = avatarStateManager.getAvatarActionMap();
     const avatarActionMapKeys = Object.keys(actionMap);
     expect(avatarActionMapKeys.length).toBe(1);
 
     const key = avatarActionMapKeys[0];
-    expect(actionMap[key]).toMatchObject({
+    expect(actionMap[key]).toMatchObject({"test":{
       ArrowLeft: false,
       ArrowRight: false,
       ArrowUp: false,
       ArrowDown: false,
-    });
+    }});
   });
 
   it('serialize should return x,y,hp of avatar', () => {
-    const serializedStates = avatarStateManager.serialize();
+    const serializedStates = avatarStateManager.serialize(roomNumber);
     const avatarKeys = Object.keys(serializedStates);
     expect(avatarKeys.length).toBe(1);
     const serializedAvatar = serializedStates[avatarKeys[0]];
@@ -34,10 +35,9 @@ describe('add', () => {
   })
 
   it('removeAvatar should remove avatar', () => {
-    const oldEnemyKeys = Object.keys(avatarStateManager.getAvatars());
+    const oldEnemyKeys = Object.keys(avatarStateManager.getAvatars(roomNumber));
     expect(oldEnemyKeys.length).toBe(1);
-    avatarStateManager.removeAvatar(oldEnemyKeys[0]);
-    const UpdatedenemyKeys = Object.keys(avatarStateManager.getAvatars());
-    expect(UpdatedenemyKeys.length).toBe(0);
+    avatarStateManager.removeAvatar(roomNumber, oldEnemyKeys[0]);
+    expect(avatarStateManager.getAvatars(roomNumber)).toBeUndefined();
   })
 });

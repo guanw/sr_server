@@ -1,7 +1,7 @@
 import { GAME_WINDOW_SIZE, AVATAR_DISPLACEMENT, ENEMY_SPEED } from "../Constants";
 import { Entity } from "./Entity";
 
-export interface EnemyObject {
+export type EnemyObject = {
   x: number;
   y: number;
 };
@@ -33,11 +33,11 @@ class Enemy extends Entity {
     this.y = y;
   }
 
-  public serialize(): EnemyObject {
+  public serialize<EnemyObject>(): EnemyObject {
     return {
       x: this.getX(),
       y: this.getY(),
-    }
+    } as unknown as EnemyObject;
   }
 
   public moveTowardsAvatar(avatarX: number, avatarY: number) {

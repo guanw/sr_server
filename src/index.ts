@@ -11,16 +11,19 @@ server.listen(3000, '0.0.0.0', () => {
 function startCleanupInterval() {
     setInterval(() => {
         console.log(`Running cleanup every ${CLEANUP_INTERVAL/1000} seconds`);
-        cleanUpDeadAvatars();
+        const rooms = avatarStateManager.getAllRooms();
+        rooms.forEach((room) => {
+            cleanUpDeadAvatars(room);
+        })
       }, CLEANUP_INTERVAL);
 }
 
-function cleanUpDeadAvatars() {
-    const avatarsMap = avatarStateManager.getAvatars();
+function cleanUpDeadAvatars(roomName: string) {
+    const avatarsMap = avatarStateManager.getAvatars(roomName);
     Object.keys(avatarsMap).forEach((avatarKey) => {
         const avatar = avatarsMap[avatarKey];
         if (avatar.getHp() <= 0) {
-            avatarStateManager.removeAvatar(avatarKey);
+            avatarStateManager.removeAvatar(roomName, avatarKey);
         }
     });
 }

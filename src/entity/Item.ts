@@ -39,12 +39,12 @@ class Item extends Entity {
       this.y = y;
     }
 
-    public serialize(): ItemObject {
+    public serialize<ItemObject>(): ItemObject {
       return {
         x: this.getX(),
         y: this.getY(),
         type: this.type,
-      }
+      } as unknown as ItemObject;
     }
 }
 
