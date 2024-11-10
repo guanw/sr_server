@@ -15,6 +15,8 @@ all: clean install build start
 # Install dependencies
 install:
 	$(NPM) install
+	$(NPM) install -g pm2
+
 
 # Build the TypeScript code
 build:
@@ -28,10 +30,10 @@ clean:
 start:
 	@if command -v $(PM2) >/dev/null 2>&1; then \
 		echo "Starting with PM2..."; \
-		$(PM2) start $(ENTRY_FILE) --name sr-server --env production; \
+		nohup $(PM2) start $(ENTRY_FILE) --name sr-server & \
 	else \
 		echo "Starting with Node.js..."; \
-		$(NODE) $(ENTRY_FILE); \
+		nohup $(NODE) $(ENTRY_FILE) & \
 	fi
 
 # Stop the server if using pm2
