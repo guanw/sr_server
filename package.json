@@ -10,7 +10,8 @@
     "test": "npx jest",
     "build": "tsc",
     "status": "pm2 status sr-server",
-    "log": "pm2 log sr-server"
+    "log": "pm2 log sr-server",
+    "deploy": "git pull && (pm2 describe 0 > /dev/null 2>&1 && pm2 stop 0 || true) && nohup pm2 start npm --name 'sr-server' -- run start &"
   },
   "keywords": [],
   "author": "",
