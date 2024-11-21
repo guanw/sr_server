@@ -29,16 +29,6 @@ export class RoomStateManager<T> {
         }
       }
 
-    //   public serialize<T>(): EntitiesSerialization<T> {
-    //     const serialization: EntitiesSerialization<T> = {};
-    //     Object.keys(this.entitiesMap).forEach((roomKey) => {
-    //         serialization[roomKey] = {};
-    //         const entities = this.entitiesMap[roomKey];
-    //         //  = entities.serialize();
-    //     })
-    //     return serialization;
-    //     }
-
       public reset(): void {
         this.entitiesMap = {};
       }

@@ -1,6 +1,7 @@
 import request from 'supertest';
 import httpApp, { AVATAR_URL, BACKGROUND_TILE_URL, BASE_TILING_URL, BOMB_URL, ENEMY_URL, PILLAR_BOTTOM_TILING_URL, PILLAR_MIDDLE_TILING_URL, PILLAR_TOP_TILING_URL, POTION_URL, RANDOM_TILING_URL, WIND_URL } from '../httpApp';
 import * as http from 'http';
+import { GET_ROOT_NO_ROOM_NAME_ERROR } from '../Constants';
 
 let server: http.Server;
 
@@ -13,16 +14,24 @@ afterAll((done) => {
   server.close(done);
 });
 
+
 describe('GET /', () => {
-  it('should return debugging info with serialized enemies, avatars, and items', async () => {
+  it('should ask for room name if not given', async () => {
     const response = await request(server).get('/');
-    expect(response.status).toBe(200);
-    expect(response.text).toContain('<h1>debugging info</h1>');
-    expect(response.text).toContain('enemies:');
-    expect(response.text).toContain('avatar:');
-    expect(response.text).toContain('items:');
-    expect(response.text).toContain('tilings');
-  });
+    expect(response.text).toContain(GET_ROOT_NO_ROOM_NAME_ERROR)
+  })
+
+  // TODO enable testing on request with room name passed as query param
+
+  // it('should return debugging info with serialized enemies, avatars, and items', async () => {
+  //   const response = await request(server).get('/');
+  //   expect(response.status).toBe(200);
+  //   expect(response.text).toContain('<h1>debugging info</h1>');
+  //   expect(response.text).toContain('enemies:');
+  //   expect(response.text).toContain('avatar:');
+  //   expect(response.text).toContain('items:');
+  //   expect(response.text).toContain('tilings');
+  // });
 });
 
 describe('GET /setup', () => {

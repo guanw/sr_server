@@ -5,6 +5,7 @@ import avatarStateManager from './states/AvatarStateManager';
 import itemsStateManager from './states/ItemStateManager';
 import tilingStateManager from './states/TilingStateManager';
 import gameStateManager from './states/GameStateManager';
+import { GET_ROOT_NO_ROOM_NAME_ERROR } from './Constants';
 
 export const BACKGROUND_TILE_URL = 'https://guanw.github.io/sr_assets/environment/ground/1.png';
 export const ENEMY_URL = 'https://guanw.github.io/sr_assets/slime_run.png';
@@ -26,7 +27,7 @@ httpApp.use(cors());
 httpApp.get('/', (req: Request, res: Response) => {
     const room = req.query.room;
     if (!room) {
-        res.send(`You must pass 'room' param as GET request`);
+        res.send(GET_ROOT_NO_ROOM_NAME_ERROR);
         return;
     }
     const enemies = JSON.stringify(enemiesStateManager.serialize());

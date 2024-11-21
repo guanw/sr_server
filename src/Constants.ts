@@ -18,3 +18,5 @@ export const TILING_SIZE = 16;
 
 // misc
 export const CLEANUP_INTERVAL = 6000;
+
+export const GET_ROOT_NO_ROOM_NAME_ERROR = `You must pass 'room' param as GET request`;
