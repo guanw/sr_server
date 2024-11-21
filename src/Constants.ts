@@ -8,8 +8,8 @@ export const AVATAR_ATTACK_ENEMY_RANGE = 17;
 
 // enemy related
 export const ENEMY_SPEED = 1;
-export const ENEMY_ATTACK_VALUE = 10;
-export const ENEMY_ATTACK_AVATAR_RANGE = 15;
+export const ENEMY_ATTACK_VALUE = 2;
+export const ENEMY_ATTACK_AVATAR_RANGE = 10;
 
 // tiling
 export const SAND_TILING_COUNT = 100;

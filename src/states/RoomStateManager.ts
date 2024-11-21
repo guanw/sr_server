@@ -10,8 +10,8 @@ export class RoomStateManager<T> {
         this.entitiesMap[roomName][entityId] = entity;
       }
 
-      public getEntitiesByRoom(roomName: string): { [entityId: string]: T } | undefined {
-        return this.entitiesMap[roomName];
+      public getEntitiesByRoom(roomName: string): { [entityId: string]: T } {
+        return this.entitiesMap[roomName] ?? {};
       }
 
       public getEntityByRoomAndId(roomName: string, entityId: string): T | undefined {
