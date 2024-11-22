@@ -37,7 +37,7 @@ class Avatar extends Entity {
   }
 
   collide() {
-    this.hp -= Math.ceil(Math.random() * ENEMY_ATTACK_VALUE);;
+    this.hp -= Math.ceil(Math.random() * ENEMY_ATTACK_VALUE);
   }
 
   serialize<AvatarObject>(): AvatarObject {

@@ -1,30 +1,30 @@
-type EntitiesMap<T> = { [roomName: string]: { [entityId: string]: T } };
+type EntitiesMap<T> = { [room: string]: { [entityId: string]: T } };
 
 export class RoomStateManager<T> {
     private entitiesMap: EntitiesMap<T> = {};
 
-    public addEntity(roomName: string, entityId: string, entity: T): void {
-        if (!this.entitiesMap[roomName]) {
-          this.entitiesMap[roomName] = {};
+    public addEntity(room: string, entityId: string, entity: T): void {
+        if (!this.entitiesMap[room]) {
+          this.entitiesMap[room] = {};
         }
-        this.entitiesMap[roomName][entityId] = entity;
+        this.entitiesMap[room][entityId] = entity;
       }
 
-      public getEntitiesByRoom(roomName: string): { [entityId: string]: T } {
-        return this.entitiesMap[roomName] ?? {};
+      public getEntitiesByRoom(room: string): { [entityId: string]: T } {
+        return this.entitiesMap[room] ?? {};
       }
 
-      public getEntityByRoomAndId(roomName: string, entityId: string): T | undefined {
-        return this.entitiesMap[roomName]?.[entityId];
+      public getEntityByRoomAndId(room: string, entityId: string): T | undefined {
+        return this.entitiesMap[room]?.[entityId];
       }
 
-      public removeEntity(roomName: string, entityId: string): void {
-        if (this.entitiesMap[roomName]) {
-          delete this.entitiesMap[roomName][entityId];
+      public removeEntity(room: string, entityId: string): void {
+        if (this.entitiesMap[room]) {
+          delete this.entitiesMap[room][entityId];
 
           // Remove the room if empty
-          if (Object.keys(this.entitiesMap[roomName]).length === 0) {
-            delete this.entitiesMap[roomName];
+          if (Object.keys(this.entitiesMap[room]).length === 0) {
+            delete this.entitiesMap[room];
           }
         }
       }

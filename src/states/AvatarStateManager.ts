@@ -2,14 +2,14 @@ import { Avatar, AvatarObject } from "../entity/Avatar";
 import { RoomStateManager } from "./RoomStateManager";
 
 type AvatarsMap = { [key: string]: Avatar };
-type AvatarsActionMap = { [roomName: string]: { [key: string]: AvatarAction } };
+type AvatarsActionMap = { [room: string]: { [key: string]: AvatarAction } };
 type AvatarAction = {
   ArrowLeft: boolean,
   ArrowRight: boolean,
   ArrowUp: boolean,
   ArrowDown: boolean,
 }
-type AvatarsSerialization = { [roomName: string]: {[key: string]: AvatarObject } };
+type AvatarsSerialization = { [room: string]: {[key: string]: AvatarObject } };
 
 class AvatarStateManager extends RoomStateManager<Avatar>{
     private avatarsActionMap: AvatarsActionMap;
@@ -19,14 +19,14 @@ class AvatarStateManager extends RoomStateManager<Avatar>{
       this.reset();
     }
 
-    public addAvatar(roomName: string, avatarId: string) {
-      super.addEntity(roomName, avatarId, new Avatar());
+    public addAvatar(room: string, avatarId: string) {
+      super.addEntity(room, avatarId, new Avatar());
 
       // Initialize actions map for the avatar
-      if (!this.avatarsActionMap[roomName]) {
-        this.avatarsActionMap[roomName] = {};
+      if (!this.avatarsActionMap[room]) {
+        this.avatarsActionMap[room] = {};
       }
-      this.avatarsActionMap[roomName][avatarId] = {
+      this.avatarsActionMap[room][avatarId] = {
         ArrowLeft: false,
         ArrowRight: false,
         ArrowUp: false,
@@ -38,20 +38,20 @@ class AvatarStateManager extends RoomStateManager<Avatar>{
       return Object.keys(this.avatarsActionMap);
     }
 
-    public getAvatars(roomName: string): AvatarsMap {
-      return super.getEntitiesByRoom(roomName);
+    public getAvatars(room: string): AvatarsMap {
+      return super.getEntitiesByRoom(room);
     }
 
-    public getAvatarById(roomName: string, id: string): Avatar {
-      return super.getEntityByRoomAndId(roomName, id);
+    public getAvatarById(room: string, id: string): Avatar {
+      return super.getEntityByRoomAndId(room, id);
     }
 
     public getAvatarActionMap(): AvatarsActionMap {
       return this.avatarsActionMap;
     }
 
-    public getAvatarActionById(roomName: string, avatarId: string): AvatarAction {
-      const roomAvatarsActionMap = this.avatarsActionMap[roomName];
+    public getAvatarActionById(room: string, avatarId: string): AvatarAction {
+      const roomAvatarsActionMap = this.avatarsActionMap[room];
       if (!roomAvatarsActionMap) {
         return {
           ArrowLeft: false,
@@ -63,8 +63,8 @@ class AvatarStateManager extends RoomStateManager<Avatar>{
       return roomAvatarsActionMap[avatarId];
     }
 
-    public getFirstAvatar(roomName: string): Avatar {
-      const avatarsMap = super.getEntitiesByRoom(roomName);
+    public getFirstAvatar(room: string): Avatar {
+      const avatarsMap = super.getEntitiesByRoom(room);
       const keys = Object.keys(avatarsMap);
       if (keys.length === 0) {
         return null;
@@ -73,9 +73,9 @@ class AvatarStateManager extends RoomStateManager<Avatar>{
       return avatarsMap[keys[0]];
     }
 
-    public serialize(roomNumber): AvatarsSerialization {
+    public serialize(room): AvatarsSerialization {
       const serialization: AvatarsSerialization = {};
-      const entitiesByRoom = super.getEntitiesByRoom(roomNumber);
+      const entitiesByRoom = super.getEntitiesByRoom(room);
       Object.keys(entitiesByRoom).forEach((key) => {
         const avatar = entitiesByRoom[key];
         serialization[key] = avatar.serialize();
@@ -83,15 +83,15 @@ class AvatarStateManager extends RoomStateManager<Avatar>{
       return serialization;
     }
 
-    public removeAvatar(roomName:string, avatarKey: string) {
-      super.removeEntity(roomName, avatarKey);
-      this.remnoveAvatarAction(roomName, avatarKey);
+    public removeAvatar(room:string, avatarKey: string) {
+      super.removeEntity(room, avatarKey);
+      this.remnoveAvatarAction(room, avatarKey);
     }
-    private remnoveAvatarAction(roomName: string, avatarKey: string) {
-      if (this.avatarsActionMap[roomName]) {
-        delete this.avatarsActionMap[roomName][avatarKey];
-        if (Object.keys(this.avatarsActionMap[roomName]).length === 0) {
-          delete this.avatarsActionMap[roomName];
+    private remnoveAvatarAction(room: string, avatarKey: string) {
+      if (this.avatarsActionMap[room]) {
+        delete this.avatarsActionMap[room][avatarKey];
+        if (Object.keys(this.avatarsActionMap[room]).length === 0) {
+          delete this.avatarsActionMap[room];
         }
       }
     }

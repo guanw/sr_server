@@ -19,13 +19,13 @@ const io = new Server(server, {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function validateData(data: any, callback: (data: any) => void) {
-    const roomName = data.roomName;
-    if (!roomName) {
-        return; // Abort if roomNumber is null
+    const room = data.room;
+    if (!room) {
+        return; // Abort if room is null
     }
 
     const avatarId = data.avatarId;
-    if (!avatarId || !avatarStateManager.getAvatarById(roomName, avatarId)) {
+    if (!avatarId || !avatarStateManager.getAvatarById(room, avatarId)) {
         return; // Abort if avatarId is invalid
     }
 
@@ -35,35 +35,35 @@ function validateData(data: any, callback: (data: any) => void) {
 
 io.on('connection', (socket) => {
     socket.on('joinRoom', (data) => {
-        if (data.roomName) {
-            const roomName = data.roomName;
+        if (data.room) {
+            const room = data.room;
             // Join the specified room
-            socket.join(roomName);
-            avatarStateManager.addAvatar(roomName, socket.id);
+            socket.join(room);
+            avatarStateManager.addAvatar(room, socket.id);
         }
-        socket.data.roomName = data.roomName;
+        socket.data.room = data.room;
     });
 
     socket.on('disconnect', () => {
-        avatarStateManager.removeAvatar(socket.data.roomName, socket.id);
-        socket.leave(socket.data.roomName);
+        avatarStateManager.removeAvatar(socket.data.room, socket.id);
+        socket.leave(socket.data.room);
     });
 
     socket.on(HANDLE_GENERATE_NEW_ENEMY, (data) => {
-        enemiesStateManager.addEnemy();
-        broadcast(data.roomName);
+        enemiesStateManager.addEnemy(data.room);
+        broadcast(data.room);
     });
 
     socket.on(HANDLE_GENERATE_NEW_ITEM, (data) => {
         itemsStateManager.addItem();
-        broadcast(data.roomName);
+        broadcast(data.room);
     })
 
     socket.on(HANDLE_COLLECT_ITEM, (data) => {
         validateData(data, (data) => {
             const avatarId = data.avatarId;
             const items = itemsStateManager.getItems();
-            const avatar = avatarStateManager.getAvatarById(data.roomName, avatarId);
+            const avatar = avatarStateManager.getAvatarById(data.room, avatarId);
             Object.keys(items).forEach((key) => {
                 const item = items[key];
                 if (avatar.isCollidedWith(item)) {
@@ -74,14 +74,14 @@ io.on('connection', (socket) => {
                     itemsStateManager.consumeItem(key);
                 }
             });
-            broadcast(data.roomName);
+            broadcast(data.room);
         })
     })
 
     socket.on(HANDLE_ENEMIES_MOVE_TOWARDS_AVATAR, (data) => {
-        const enemiesMap = enemiesStateManager.getEnemies();
+        const enemiesMap = enemiesStateManager.getEnemies(data.room);
         // TODO make enemy move towards the avatar whose client created the enemy
-        const firstAvatar = avatarStateManager.getFirstAvatar(data.roomName);
+        const firstAvatar = avatarStateManager.getFirstAvatar(data.room);
         if (firstAvatar == null) {
             return;
         }
@@ -89,12 +89,12 @@ io.on('connection', (socket) => {
             const enemy = enemiesMap[key];
             enemy.moveTowardsAvatar(firstAvatar.getX(), firstAvatar.getY());
         });
-        broadcast(data.roomName);
+        broadcast(data.room);
     });
 
     socket.on(HANDLE_ENEMIES_ATTACK_AVATAR, (data) => {
-        const enemiesMap = enemiesStateManager.getEnemies();
-        const avatarsMap = avatarStateManager.getAvatars(data.roomName);
+        const enemiesMap = enemiesStateManager.getEnemies(data.room);
+        const avatarsMap = avatarStateManager.getAvatars(data.room);
         Object.keys(avatarsMap).forEach((avatarKey) => {
             const avatar = avatarsMap[avatarKey];
             Object.keys(enemiesMap).forEach((key) => {
@@ -107,14 +107,14 @@ io.on('connection', (socket) => {
                 }
             });
         });
-        broadcast(data.roomName);
+        broadcast(data.room);
     })
 
     socket.on(HANDLE_AVATAR_ATTACK_ENEMIES, (data) => {
         validateData(data, (data) => {
             const avatarId = data.avatarId;
-            const enemiesMap = enemiesStateManager.getEnemies();
-            const avatar = avatarStateManager.getAvatarById(data.roomName, avatarId);
+            const enemiesMap = enemiesStateManager.getEnemies(data.room);
+            const avatar = avatarStateManager.getAvatarById(data.room, avatarId);
 
             Object.keys(enemiesMap).forEach((key) => {
                 const enemy = enemiesMap[key];
@@ -122,10 +122,10 @@ io.on('connection', (socket) => {
                     return;
                 }
                 if (enemy.isCollidedWith(avatar, AVATAR_ATTACK_ENEMY_RANGE)) {
-                    enemiesStateManager.killEnemy(key);
+                    enemiesStateManager.killEnemy(data.room, key);
                 }
             });
-            broadcast(data.roomName);
+            broadcast(data.room);
         })
     })
 
@@ -133,7 +133,7 @@ io.on('connection', (socket) => {
         validateData(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
-            const moveKeyTriggered = activateAvatarMoveKey(data.roomName, avatarId, key);
+            const moveKeyTriggered = activateAvatarMoveKey(data.room, avatarId, key);
             if (moveKeyTriggered) {
                 onComplete(callback);
                 return;
@@ -152,7 +152,7 @@ io.on('connection', (socket) => {
         validateData(data, (data) => {
             const key = data.key as string;
             const avatarId = data.avatarId as string;
-            const avatarKeys = avatarStateManager.getAvatarActionById(data.roomName, avatarId);
+            const avatarKeys = avatarStateManager.getAvatarActionById(data.room, avatarId);
             if (key in avatarKeys) {
                 avatarKeys[key] = false;
             }
@@ -163,8 +163,8 @@ io.on('connection', (socket) => {
     socket.on(HANDLE_MOVE_AVATAR, async (data) => {
         validateData(data, (data) => {
             const avatarId = data.avatarId;
-            const avatar = avatarStateManager.getAvatarById(data.roomName, avatarId);
-            const avatarKeys = avatarStateManager.getAvatarActionById(data.roomName, avatarId);
+            const avatar = avatarStateManager.getAvatarById(data.room, avatarId);
+            const avatarKeys = avatarStateManager.getAvatarActionById(data.room, avatarId);
             if (avatarKeys.ArrowLeft) {
                 avatar.moveLeft();
             }
@@ -189,8 +189,8 @@ function onComplete(callback?: (() => void) | null) {
 };
 
 /* return true if moveKey is triggered otherwise false*/
-function activateAvatarMoveKey(roomName: string, avatarId: string, moveKey: string) :boolean {
-    const avatarKeys = avatarStateManager.getAvatarActionById(roomName, avatarId);
+function activateAvatarMoveKey(room: string, avatarId: string, moveKey: string) :boolean {
+    const avatarKeys = avatarStateManager.getAvatarActionById(room, avatarId);
     if (moveKey in avatarKeys) {
         avatarKeys[moveKey] = true;
         return true;
@@ -206,10 +206,10 @@ function activateMenuToggle(key: string) :boolean {
     return false;
 }
 
-function broadcast(roomName: string) {
-    io.to(roomName).emit(UPDATE, {
-        'enemies': enemiesStateManager.serialize(),
-        'avatars': avatarStateManager.serialize(roomName),
+function broadcast(room: string) {
+    io.to(room).emit(UPDATE, {
+        'enemies': enemiesStateManager.serialize(room),
+        'avatars': avatarStateManager.serialize(room),
         'items': itemsStateManager.serialize(),
         'tilings': tilingStateManager.serialize(),
         'gameStopped': gameStateManager.gameStopped(),

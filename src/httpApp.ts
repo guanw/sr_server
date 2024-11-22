@@ -30,7 +30,7 @@ httpApp.get('/', (req: Request, res: Response) => {
         res.send(GET_ROOT_NO_ROOM_NAME_ERROR);
         return;
     }
-    const enemies = JSON.stringify(enemiesStateManager.serialize());
+    const enemies = JSON.stringify(enemiesStateManager.serialize(room));
     const avatars = JSON.stringify(avatarStateManager.serialize(room));
     const items = JSON.stringify(itemsStateManager.serialize());
     const tilings = JSON.stringify(tilingStateManager.serialize());

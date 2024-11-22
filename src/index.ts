@@ -18,12 +18,12 @@ function startCleanupInterval() {
       }, CLEANUP_INTERVAL);
 }
 
-function cleanUpDeadAvatars(roomName: string) {
-    const avatarsMap = avatarStateManager.getAvatars(roomName);
+function cleanUpDeadAvatars(room: string) {
+    const avatarsMap = avatarStateManager.getAvatars(room);
     Object.keys(avatarsMap).forEach((avatarKey) => {
         const avatar = avatarsMap[avatarKey];
         if (avatar.getHp() <= 0) {
-            avatarStateManager.removeAvatar(roomName, avatarKey);
+            avatarStateManager.removeAvatar(room, avatarKey);
         }
     });
 }

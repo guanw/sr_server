@@ -1,49 +1,43 @@
 import { Enemy, EnemyObject } from "../entity/Enemy";
 import Utils from "../Utils";
+import { RoomStateManager } from "./RoomStateManager";
 
 type EnemiesMap = { [key: string]: Enemy };
 type EnemiesSerialization = { [key: string]: EnemyObject };
 
-class EnemiesStateManager {
-    private enemiesMap: EnemiesMap;
+class EnemiesStateManager extends RoomStateManager<Enemy>{
+    // private enemiesMap: EnemiesMap;
 
     public constructor() {
+      super()
       this.reset();
     }
 
-    public addEnemy() {
+    public addEnemy(room: string) {
       const uuid = Utils.genUID();
-      this.enemiesMap[uuid] = new Enemy();
+      super.addEntity(room, uuid, new Enemy());
     }
 
-    public getEnemies(): EnemiesMap {
-      return this.enemiesMap;
+    public getEnemies(room: string): EnemiesMap {
+      return super.getEntitiesByRoom(room);
     }
 
-    public serialize(): EnemiesSerialization {
+    public serialize(room): EnemiesSerialization {
       const serialization: EnemiesSerialization = {};
-      Object.keys(this.enemiesMap).forEach((key) => {
-        const enemy = this.enemiesMap[key];
-          serialization[key] = {
-            x: enemy.getX(),
-            y: enemy.getY(),
-        };
+      const entitiesByRoom = super.getEntitiesByRoom(room);
+      Object.keys(entitiesByRoom).forEach((key) => {
+        const avatar = entitiesByRoom[key];
+        serialization[key] = avatar.serialize();
       })
       return serialization;
     }
 
-    public killEnemy(enemyKey: string) {
-      delete(this.enemiesMap[enemyKey]);
+    public killEnemy(room: string, enemyKey: string) {
+      super.removeEntity(room, enemyKey)
     }
 
     public destroyAllEnemies() {
-      Object.keys(this.enemiesMap).forEach((key) => {
-        this.killEnemy(key);
-      });
-    }
-
-    public reset() {
-      this.enemiesMap = {};
+      super.reset();
     }
 }
 
